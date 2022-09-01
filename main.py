@@ -48,6 +48,14 @@ def fetch_classes():
     except:
         return 'Error.'
 
+def fetch_protocoin():
+    try:
+        r = requests.get('https://api.spaceport.dns.t0.vc/protocoin/transactions/', timeout=5)
+        r.raise_for_status()
+        return r.json()
+    except:
+        return 'Error.'
+
 if wa_api_key:
     import wolframalpha
     wa_client = wolframalpha.Client(wa_api_key)
@@ -143,6 +151,8 @@ think_result = ''
 stats = {}
 classes = {}
 classes_start = 0
+protocoin = {}
+protocoin_line = 0
 
 while True:
     if current_screen == 'home':
@@ -156,9 +166,10 @@ while True:
         stdscr.addstr(9, 4, '[T] Stats')
         stdscr.addstr(11, 4, '[S] Sign')
         stdscr.addstr(13, 4, '[C] Classes')
+        stdscr.addstr(15, 4, '[P] Protocoin')
         if wa_api_key:
-            stdscr.addstr(15, 4, '[K] Think')
-        stdscr.addstr(17, 4, '[A] About')
+            stdscr.addstr(17, 4, '[K] Think')
+        stdscr.addstr(19, 4, '[A] About')
 
         stdscr.addstr(23, 1, '             Copyright (c) 1985 Bikeshed Computer Systems Corp.')
         stdscr.clrtoeol()
@@ -231,6 +242,45 @@ while True:
 
         if not classes:
             classes = fetch_classes()
+            stdscr.erase()
+            skip_input = True
+    elif current_screen == 'protocoin':
+        stdscr.addstr(0, 1, 'PROTOVAC')
+        stdscr.addstr(2, 1, 'Protocoin')
+        stdscr.addstr(3, 1, '=========')
+        if protocoin:
+            txs = protocoin['transactions']
+            lines = []
+
+            lines.append('Protocoin is used to buy things from Protospace\'s vending machines.')
+            lines.append('')
+            lines.append('Total in circulation: {}'.format(protocoin['total_protocoin']))
+            lines.append('')
+            lines.append('Transactions:')
+            lines.append('')
+            lines.append('ID     Date        Method       Amount  Category')
+
+            for tx in txs:
+                lines.append('{}  {}  {:<11}  {:<6}  {:<11}'.format(
+                    tx['id'],
+                    tx['date'],
+                    tx['account_type'],
+                    tx['protocoin'],
+                    'Transfer' if tx['category'] == 'Other' else tx['category'],
+                ))
+
+            offset = 5
+            for num, line in enumerate(lines[protocoin_line:protocoin_line+17]):
+                stdscr.addstr(num + offset, 1, line)
+        else:
+            stdscr.addstr(5, 1, 'Loading...')
+
+        stdscr.addstr(23, 1, '[B] Back  [J] Down  [K] Up')
+        stdscr.clrtoeol()
+        stdscr.refresh()
+
+        if not protocoin:
+            protocoin = fetch_protocoin()
             stdscr.erase()
             skip_input = True
     elif current_screen == 'sign':
@@ -330,6 +380,8 @@ while True:
             current_screen = 'debug'
         elif button == 'a':
             current_screen = 'about'
+        elif button == 'p':
+            current_screen = 'protocoin'
     elif current_screen == 'debug':
         if button == 'b':
             current_screen = 'home'
@@ -351,6 +403,18 @@ while True:
         elif button == 'k':
             if classes_start > 0:
                 classes_start -= 1
+                stdscr.erase()
+    elif current_screen == 'protocoin':
+        if button == 'b':
+            current_screen = 'home'
+            protocoin = {}
+            protocoin_line = 0
+        elif button == 'j':
+            protocoin_line += 1
+            stdscr.erase()
+        elif button == 'k':
+            if protocoin_line > 0:
+                protocoin_line -= 1
                 stdscr.erase()
     elif current_screen == 'sign':
         if sign_to_send:
