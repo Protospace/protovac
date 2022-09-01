@@ -158,15 +158,16 @@ while True:
         stdscr.addstr(13, 4, '[C] Classes')
         if wa_api_key:
             stdscr.addstr(15, 4, '[K] Think')
+        stdscr.addstr(17, 4, '[A] About')
 
         stdscr.addstr(23, 1, '             Copyright (c) 1985 Bikeshed Computer Systems Corp.')
         stdscr.clrtoeol()
         stdscr.refresh()
     elif current_screen == 'debug':
         stdscr.addstr(0, 1, 'PROTOVAC')
-        stdscr.addstr(3, 1, 'Debug Mode')
-        stdscr.addstr(4, 1, '==========')
-        stdscr.addstr(6, 1, str.format('Character pressed = {0}', c))
+        stdscr.addstr(2, 1, 'Debug Mode')
+        stdscr.addstr(3, 1, '==========')
+        stdscr.addstr(5, 1, str.format('Character pressed = {0}', c))
         stdscr.clrtoeol()
 
         stdscr.addstr(23, 1, '[B] Back')
@@ -279,6 +280,23 @@ while True:
             stdscr.addstr(18, 4, 'how long did the Aztec empire last?')
 
         stdscr.refresh()
+    elif current_screen == 'about':
+        stdscr.addstr(0, 1, 'PROTOVAC')
+        stdscr.addstr(2, 1, 'About')
+        stdscr.addstr(3, 1, '=====')
+        stdscr.addstr(5, 1, 'Protovac is a universal mainframe computer accessible by terminal.')
+        stdscr.addstr(7, 1, 'License')
+        stdscr.addstr(8, 1, '-------')
+        stdscr.addstr(10, 1, 'This program is free and open-source software licensed under the MIT License.')
+        stdscr.addstr(11, 1, 'Please see the LICENSE file for details. This means you have the right to')
+        stdscr.addstr(12, 1, 'study, change, and distribute the software and source code to anyone and for')
+        stdscr.addstr(13, 1, 'any purpose.')
+        stdscr.addstr(15, 1, 'Source code: github.com/Protospace/protovac')
+        stdscr.addstr(17, 1, 'Acknowledgements')
+        stdscr.addstr(18, 1, '----------------')
+        stdscr.addstr(20, 1, 'Thanks to Peter for lending the Morrow MTD-60 terminal and Jamie for the Pi.')
+
+        stdscr.addstr(23, 1, '[B] Back')
 
     stdscr.move(23, 79)
 
@@ -310,6 +328,8 @@ while True:
             current_screen = 'think'
         elif button == 'd':
             current_screen = 'debug'
+        elif button == 'a':
+            current_screen = 'about'
     elif current_screen == 'debug':
         if button == 'b':
             current_screen = 'home'
@@ -317,6 +337,9 @@ while True:
         if button == 'b':
             current_screen = 'home'
             stats = {}
+    elif current_screen == 'about':
+        if button == 'b':
+            current_screen = 'home'
     elif current_screen == 'classes':
         if button == 'b':
             current_screen = 'home'
