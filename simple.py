@@ -1,4 +1,4 @@
-#!/home/pi/protovac/env/bin/python
+#!/home/tanner/protovac/env/bin/python
 
 import time
 import curses
