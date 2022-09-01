@@ -1,3 +1,5 @@
+#!/home/pi/protovac/env/bin/python
+
 from unicurses import *
 from curses.textpad import Textbox, rectangle
 import requests
