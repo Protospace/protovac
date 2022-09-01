@@ -3,7 +3,14 @@
 import curses
 import requests
 import pytz
+import re
 from datetime import datetime
+
+try:
+    import secrets
+    wa_api_key = secrets.wa_api_key
+except:
+    wa_api_key = None
 
 ENTER_KEY = 10
 BACKSPACE_KEY = 263
@@ -41,6 +48,78 @@ def fetch_classes():
     except:
         return 'Error.'
 
+if wa_api_key:
+    import wolframalpha
+    wa_client = wolframalpha.Client(wa_api_key)
+
+def think_send(query):
+    result = ''
+    try:
+        res = wa_client.query(query, timeout=20)
+    except BaseException as e:
+        logging.error('Error hitting W|A API: {} - {}\n'.format(e.__class__.__name__, e))
+        return 'Network error'
+
+    if 'didyoumeans' in res:
+        try:
+            guess = res['didyoumeans']['didyoumean']['#text']
+        except TypeError:
+            guess = res['didyoumeans']['didyoumean'][0]['#text']
+        next_result, img_url = wa(guess)
+        result += 'Confused, using \'' + guess + '\'\n' + next_result
+    elif 'pod' in res:
+        pods = res['pod'] if isinstance(res['pod'], list) else [res['pod']]
+        for pod in pods:
+            title = pod['@title']
+            subpods = pod['subpod'] if isinstance(pod['subpod'], list) else [pod['subpod']]
+            plaintexts = []
+
+            for subpod in subpods:
+                if subpod['plaintext']:
+                    plaintexts.append(subpod['plaintext'])
+
+            plaintext = '; '.join(plaintexts)
+
+            if any([x in title.lower() for x in ['input', 'conversion', 'corresponding', 'comparison', 'interpretation']]):
+                pass
+            elif 'definition' in title.lower():
+                if plaintext[0] == '1':
+                    definition = plaintext.split('\n')[0].split(' | ', 1)[1]
+                else:
+                    definition = plaintext
+                result += 'Definition: ' + definition + '\n'
+            elif 'result' in title.lower():
+                if re.match(r'^\d+/\d+$', plaintext):
+                    plaintext += '\n' + wa(plaintext + '.0')[0]
+                if 'base' in query.lower() and '_' in plaintext:
+                    plaintext = '(Base conversion) "' + plaintext + '"'
+                if '(irreducible)' in plaintext and '/' in plaintext:
+                    result, _ = wa(query + '.0')
+                    break
+                else:
+                    result += 'Result: ' + plaintext + '\n'
+                    break
+            elif plaintext:
+                result += title + ': ' + plaintext + '\n'
+                break
+    else:
+        result = 'Error'
+
+    result = result.strip()
+
+    if len(result) > 500:
+        result = result[:500] + '... truncated.'
+    elif len(result) == 0 and not img_url:
+        result = 'Error'
+
+    result = result.replace('Stephen Wolfram', 'Tanner') # lol
+    result = result.replace('and his team', '')
+
+    if '(according to' in result:
+        result = result.split('(according to')[0]
+
+    return result
+
 skip_input = False
 current_screen = 'home'
 prev_screen = current_screen
@@ -59,6 +138,8 @@ stdscr.keypad(True)
 curses.curs_set(0)
 
 sign_to_send = ''
+think_to_send = ''
+think_result = ''
 stats = {}
 classes = {}
 classes_start = 0
@@ -75,7 +156,8 @@ while True:
         stdscr.addstr(9, 4, '[T] Stats')
         stdscr.addstr(11, 4, '[S] Sign')
         stdscr.addstr(13, 4, '[C] Classes')
-        #stdscr.addstr(10, 4, '[F] Forum')
+        if wa_api_key:
+            stdscr.addstr(15, 4, '[K] Think')
 
         stdscr.addstr(23, 1, '             Copyright (c) 1985 Bikeshed Computer Systems Corp.')
         stdscr.clrtoeol()
@@ -167,6 +249,36 @@ while True:
 
         stdscr.clrtoeol()
         stdscr.refresh()
+    elif current_screen == 'think':
+        stdscr.erase()
+        stdscr.addstr(0, 1, 'PROTOVAC')
+        stdscr.addstr(2, 1, 'Think')
+        stdscr.addstr(3, 1, '=====')
+        stdscr.addstr(5, 1, 'Give Protovac something to think about.')
+
+        if think_to_send:
+            stdscr.addstr(7, 4, think_to_send)
+            stdscr.clrtoeol()
+            stdscr.addstr(23, 1, '[ENTER] Send  [ESC] Cancel')
+        else:
+            stdscr.addstr(7, 4, '[E] Edit prompt')
+            stdscr.addstr(23, 1, '[B] Back')
+
+        if think_result:
+            stdscr.addstr(9, 4, think_result)
+
+        if not think_result and not think_to_send:
+            stdscr.addstr(9, 1, 'Examples:')
+            stdscr.addstr(11, 4, '42 + 69')
+            stdscr.addstr(12, 4, '55 kg to lbs')
+            stdscr.addstr(13, 4, 'density of lead')
+            stdscr.addstr(14, 4, 'if x = 4, what is 3x + 50?')
+            stdscr.addstr(15, 4, 'force m=150g, a=50cm/s^2')
+            stdscr.addstr(16, 4, 'boiling point of benzene at 550 torr')
+            stdscr.addstr(17, 4, 'goats with highest milk yield')
+            stdscr.addstr(18, 4, 'how long did the Aztec empire last?')
+
+        stdscr.refresh()
 
     stdscr.move(23, 79)
 
@@ -194,8 +306,13 @@ while True:
             current_screen = 'sign'
         elif button == 'c':
             current_screen = 'classes'
+        elif button == 'k' and wa_api_key:
+            current_screen = 'think'
         elif button == 'd':
             current_screen = 'debug'
+    elif current_screen == 'debug':
+        if button == 'b':
+            current_screen = 'home'
     elif current_screen == 'stats':
         if button == 'b':
             current_screen = 'home'
@@ -233,6 +350,29 @@ while True:
             current_screen = 'home'
         elif button == 'e':
             sign_to_send = '_'
+    elif current_screen == 'think':
+        if think_to_send:
+            if c == BACKSPACE_KEY:
+                think_to_send = think_to_send[:-2] + '_'
+            elif c == ESCAPE_KEY:
+                think_to_send = ''
+                stdscr.erase()
+            elif c == ENTER_KEY:
+                if len(think_to_send) > 1:
+                    stdscr.addstr(9, 4, 'Thinking...')
+                    stdscr.clrtoeol()
+                    stdscr.refresh()
+                    think_result = think_send(think_to_send[:-1])
+                    stdscr.erase()
+                    think_to_send = ''
+            else:
+                if c < 127 and c > 31:
+                    think_to_send = think_to_send[:-1] + chr(c) + '_'
+        elif button == 'b':
+            current_screen = 'home'
+            think_result = ''
+        elif button == 'e':
+            think_to_send = '_'
 
     if current_screen != prev_screen:
         prev_screen = current_screen
