@@ -73,7 +73,7 @@ def think_send(query):
             guess = res['didyoumeans']['didyoumean']['#text']
         except TypeError:
             guess = res['didyoumeans']['didyoumean'][0]['#text']
-        next_result, img_url = wa(guess)
+        next_result = think_send(guess)
         result += 'Confused, using \'' + guess + '\'\n' + next_result
     elif 'pod' in res:
         pods = res['pod'] if isinstance(res['pod'], list) else [res['pod']]
@@ -98,11 +98,11 @@ def think_send(query):
                 result += 'Definition: ' + definition + '\n'
             elif 'result' in title.lower():
                 if re.match(r'^\d+/\d+$', plaintext):
-                    plaintext += '\n' + wa(plaintext + '.0')[0]
+                    plaintext += '\n' + think_send(plaintext + '.0')
                 if 'base' in query.lower() and '_' in plaintext:
                     plaintext = '(Base conversion) "' + plaintext + '"'
                 if '(irreducible)' in plaintext and '/' in plaintext:
-                    result, _ = wa(query + '.0')
+                    result = think_send(query + '.0')
                     break
                 else:
                     result += 'Result: ' + plaintext + '\n'
@@ -162,7 +162,7 @@ while True:
         stdscr.addstr(3, 1, '  |  ___/  |  __ /  | |   | |    | |    | |   | |  \ \ / / / ___ \  | |       ')
         stdscr.addstr(4, 1, ' _| |_    _| |  \ \_\  `-\'  /   _| |_   \  `-\'  /   \ \' /_/ /   \ \_\ `.___.\'\\')
         stdscr.addstr(5, 1, '|_____|  |____| |___|`.___.\'   |_____|   `.___.\'     \_/|____| |____|`.____ .\'')
-        stdscr.addstr(6, 1, '                                         UNIVERSAL COMPUTER')
+        stdscr.addstr(7, 1, '                                         UNIVERSAL COMPUTER')
 
         stdscr.addstr(9, 4, '[S] Stats')
         stdscr.addstr(11, 4, '[N] Sign')
