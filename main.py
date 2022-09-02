@@ -50,7 +50,7 @@ def fetch_classes():
 
 def fetch_protocoin():
     try:
-        r = requests.get('https://api.spaceport.dns.t0.vc/protocoin/transactions/', timeout=5)
+        r = requests.get('https://api.my.protospace.ca/protocoin/transactions/', timeout=5)
         r.raise_for_status()
         return r.json()
     except:
@@ -156,26 +156,27 @@ protocoin_line = 0
 
 while True:
     if current_screen == 'home':
-        stdscr.addstr(1, 1, ' _______  _______      ___    _________    ___   ____   ____  _        ______ ')
-        stdscr.addstr(2, 1, '|_   __ \|_   __ \   .\'   `. |  _   _  | .\'   `.|_  _| |_  _|/ \     .\' ___  |')
-        stdscr.addstr(3, 1, '  | |__) | | |__) | /  .-.  \|_/ | | \_|/  .-.  \ \ \   / / / _ \   / .\'   \_|')
-        stdscr.addstr(4, 1, '  |  ___/  |  __ /  | |   | |    | |    | |   | |  \ \ / / / ___ \  | |       ')
-        stdscr.addstr(5, 1, ' _| |_    _| |  \ \_\  `-\'  /   _| |_   \  `-\'  /   \ \' /_/ /   \ \_\ `.___.\'\\')
-        stdscr.addstr(6, 1, '|_____|  |____| |___|`.___.\'   |_____|   `.___.\'     \_/|____| |____|`.____ .\'')
+        stdscr.addstr(0, 1, ' _______  _______      ___    _________    ___   ____   ____  _        ______ ')
+        stdscr.addstr(1, 1, '|_   __ \|_   __ \   .\'   `. |  _   _  | .\'   `.|_  _| |_  _|/ \     .\' ___  |')
+        stdscr.addstr(2, 1, '  | |__) | | |__) | /  .-.  \|_/ | | \_|/  .-.  \ \ \   / / / _ \   / .\'   \_|')
+        stdscr.addstr(3, 1, '  |  ___/  |  __ /  | |   | |    | |    | |   | |  \ \ / / / ___ \  | |       ')
+        stdscr.addstr(4, 1, ' _| |_    _| |  \ \_\  `-\'  /   _| |_   \  `-\'  /   \ \' /_/ /   \ \_\ `.___.\'\\')
+        stdscr.addstr(5, 1, '|_____|  |____| |___|`.___.\'   |_____|   `.___.\'     \_/|____| |____|`.____ .\'')
+        stdscr.addstr(6, 1, '                                         UNIVERSAL COMPUTER')
 
-        stdscr.addstr(9, 4, '[T] Stats')
-        stdscr.addstr(11, 4, '[S] Sign')
+        stdscr.addstr(9, 4, '[S] Stats')
+        stdscr.addstr(11, 4, '[N] Sign')
         stdscr.addstr(13, 4, '[C] Classes')
         stdscr.addstr(15, 4, '[P] Protocoin')
         if wa_api_key:
-            stdscr.addstr(17, 4, '[K] Think')
+            stdscr.addstr(17, 4, '[T] Think')
         stdscr.addstr(19, 4, '[A] About')
 
-        stdscr.addstr(23, 1, '             Copyright (c) 1985 Bikeshed Computer Systems Corp.')
+        stdscr.addstr(23, 1, '              Copyright (c) 1985 Bikeshed Computer Systems Corp.')
         stdscr.clrtoeol()
         stdscr.refresh()
     elif current_screen == 'debug':
-        stdscr.addstr(0, 1, 'PROTOVAC')
+        stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Debug Mode')
         stdscr.addstr(3, 1, '==========')
         stdscr.addstr(5, 1, str.format('Character pressed = {0}', c))
@@ -185,7 +186,7 @@ while True:
         stdscr.clrtoeol()
         stdscr.refresh()
     elif current_screen == 'stats':
-        stdscr.addstr(0, 1, 'PROTOVAC')
+        stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Protospace Stats')
         stdscr.addstr(3, 1, '================')
         if stats:
@@ -214,7 +215,7 @@ while True:
             stdscr.erase()
             skip_input = True
     elif current_screen == 'classes':
-        stdscr.addstr(0, 1, 'PROTOVAC')
+        stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Protospace Classes')
         stdscr.addstr(3, 1, '==================')
         if classes:
@@ -245,7 +246,7 @@ while True:
             stdscr.erase()
             skip_input = True
     elif current_screen == 'protocoin':
-        stdscr.addstr(0, 1, 'PROTOVAC')
+        stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Protocoin')
         stdscr.addstr(3, 1, '=========')
         if protocoin:
@@ -284,7 +285,7 @@ while True:
             stdscr.erase()
             skip_input = True
     elif current_screen == 'sign':
-        stdscr.addstr(0, 1, 'PROTOVAC')
+        stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Protospace Sign')
         stdscr.addstr(3, 1, '===============')
         stdscr.addstr(5, 1, 'Send a message to the sign in the welcome room and classroom.')
@@ -302,7 +303,7 @@ while True:
         stdscr.refresh()
     elif current_screen == 'think':
         stdscr.erase()
-        stdscr.addstr(0, 1, 'PROTOVAC')
+        stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Think')
         stdscr.addstr(3, 1, '=====')
         stdscr.addstr(5, 1, 'Give Protovac something to think about.')
@@ -331,7 +332,7 @@ while True:
 
         stdscr.refresh()
     elif current_screen == 'about':
-        stdscr.addstr(0, 1, 'PROTOVAC')
+        stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'About')
         stdscr.addstr(3, 1, '=====')
         stdscr.addstr(5, 1, 'Protovac is a universal mainframe computer accessible by terminal.')
@@ -368,13 +369,13 @@ while True:
     button = chr(c).lower()
 
     if current_screen == 'home':
-        if button == 't':
+        if button == 's':
             current_screen = 'stats'
-        elif button == 's':
+        elif button == 'n':
             current_screen = 'sign'
         elif button == 'c':
             current_screen = 'classes'
-        elif button == 'k' and wa_api_key:
+        elif button == 't' and wa_api_key:
             current_screen = 'think'
         elif button == 'd':
             current_screen = 'debug'
