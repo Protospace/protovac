@@ -30,7 +30,7 @@ def sign_send(to_send):
         r.raise_for_status()
         return 'Success!'
     except:
-        return 'Error.'
+        return 'Error'
 
 def fetch_stats():
     try:
@@ -38,7 +38,7 @@ def fetch_stats():
         r.raise_for_status()
         return r.json()
     except:
-        return 'Error.'
+        return 'Error'
 
 def fetch_classes():
     try:
@@ -46,7 +46,7 @@ def fetch_classes():
         r.raise_for_status()
         return r.json()
     except:
-        return 'Error.'
+        return 'Error'
 
 def fetch_protocoin():
     try:
@@ -54,7 +54,7 @@ def fetch_protocoin():
         r.raise_for_status()
         return r.json()
     except:
-        return 'Error.'
+        return 'Error'
 
 if wa_api_key:
     import wolframalpha
@@ -189,7 +189,9 @@ while True:
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Protospace Stats')
         stdscr.addstr(3, 1, '================')
-        if stats:
+        if stats == 'Error':
+            stdscr.addstr(5, 1, 'Error. Go back and try again.')
+        elif stats:
             stdscr.addstr(5 , 1, 'Next meeting: {}'.format(format_date(stats['next_meeting'])))
             stdscr.addstr(7 , 1, 'Next clean:   {}'.format(format_date(stats['next_clean'])))
             stdscr.addstr(9, 1, 'Next class:   {}'.format(stats['next_class']['name']))
@@ -218,7 +220,9 @@ while True:
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Protospace Classes')
         stdscr.addstr(3, 1, '==================')
-        if classes:
+        if classes == 'Error':
+            stdscr.addstr(5, 1, 'Error. Go back and try again.')
+        elif classes:
             classes_in_view = classes['results'][classes_start:6+classes_start]
             lines = []
             for session in classes_in_view:
@@ -249,7 +253,9 @@ while True:
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Protocoin')
         stdscr.addstr(3, 1, '=========')
-        if protocoin:
+        if protocoin == 'Error':
+            stdscr.addstr(5, 1, 'Error. Go back and try again.')
+        elif protocoin:
             txs = protocoin['transactions']
             lines = []
 
