@@ -219,15 +219,16 @@ while True:
     elif current_screen == 'classes':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Protospace Classes')
-        stdscr.addstr(3, 1, '==================')
+        stdscr.addstr(3, 1, '==================              Instructor    Cost     Students')
         if classes == 'Error':
             stdscr.addstr(5, 1, 'Error. Go back and try again.')
         elif classes:
             classes_in_view = classes['results'][classes_start:6+classes_start]
             lines = []
+
             for session in classes_in_view:
                 lines.append(session['course_data']['name'])
-                lines.append('{}  Instructor: {}  Cost: {}  Students: {}'.format(
+                lines.append('{:<30}  {:<12}  {:<7}  {:<7}'.format(
                     format_date(session['datetime']),
                     'Protospace' if session['course_data']['id'] in [413, 317, 273] else session['instructor_name'],
                     'Free' if session['cost'] == '0.00' else '$' + session['cost'],
@@ -295,7 +296,7 @@ while True:
         stdscr.addstr(2, 1, 'Protospace Sign')
         stdscr.addstr(3, 1, '===============')
         stdscr.addstr(5, 1, 'Send a message to the sign in the welcome room and classroom.')
-        stdscr.addstr(6, 1, 'After sending, turn your head right and wait.')
+        stdscr.addstr(6, 1, 'After sending, turn your head right and wait 5 seconds.')
 
         if sign_to_send:
             stdscr.addstr(8, 4, sign_to_send)
@@ -363,16 +364,13 @@ while True:
         try:
             c = stdscr.getch()
         except KeyboardInterrupt:
-            break
+            pass
+            #break
 
-    if c == curses.KEY_UP:
-        pass
-    elif c == curses.KEY_DOWN:
-        pass
-    elif c == 10:   # ENTER is pressed
-        pass
-
-    button = chr(c).lower()
+    try:
+        button = chr(c).lower()
+    except:
+        button = None
 
     if current_screen == 'home':
         if button == 's':
@@ -392,6 +390,8 @@ while True:
     elif current_screen == 'debug':
         if button == 'b':
             current_screen = 'home'
+        if button == 'x':
+            break
     elif current_screen == 'stats':
         if button == 'b':
             current_screen = 'home'
