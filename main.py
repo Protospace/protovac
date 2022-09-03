@@ -1,5 +1,15 @@
 #!/home/tanner/protovac/env/bin/python
 
+import os, logging
+DEBUG = os.environ.get('DEBUG')
+logging.basicConfig(
+    filename='protovax.log', encoding='utf-8',
+    format='[%(asctime)s] %(levelname)s %(module)s/%(funcName)s - %(message)s',
+    level=logging.DEBUG if DEBUG else logging.INFO)
+
+logging.info('')
+logging.info('Boot up')
+
 import curses
 import requests
 import pytz
@@ -25,35 +35,43 @@ def format_date(datestr):
 
 def sign_send(to_send):
     try:
+        logging.info('Sending to sign: %s', to_send)
         data = dict(sign=to_send, on_behalf_of='protovac')
         r = requests.post('https://api.my.protospace.ca/stats/sign/', data=data, timeout=5)
         r.raise_for_status()
         return 'Success!'
-    except:
+    except BaseException as e:
+        logging.exception(e)
         return 'Error'
 
 def fetch_stats():
     try:
+        logging.info('Fetching status...')
         r = requests.get('https://api.my.protospace.ca/stats/', timeout=5)
         r.raise_for_status()
         return r.json()
-    except:
+    except BaseException as e:
+        logging.exception(e)
         return 'Error'
 
 def fetch_classes():
     try:
+        logging.info('Fetching classes...')
         r = requests.get('https://api.my.protospace.ca/sessions/', timeout=5)
         r.raise_for_status()
         return r.json()
-    except:
+    except BaseException as e:
+        logging.exception(e)
         return 'Error'
 
 def fetch_protocoin():
     try:
+        logging.info('Fetching protocoin...')
         r = requests.get('https://api.my.protospace.ca/protocoin/transactions/', timeout=5)
         r.raise_for_status()
         return r.json()
-    except:
+    except BaseException as e:
+        logging.exception(e)
         return 'Error'
 
 if wa_api_key:
@@ -153,6 +171,8 @@ classes = {}
 classes_start = 0
 protocoin = {}
 protocoin_line = 0
+
+logging.info('Starting main loop...')
 
 while True:
     if current_screen == 'home':
@@ -456,7 +476,12 @@ while True:
                     stdscr.addstr(9, 4, 'Thinking...')
                     stdscr.clrtoeol()
                     stdscr.refresh()
-                    think_result = think_send(think_to_send[:-1])
+
+                    query = think_to_send[:-1]
+                    logging.info('Thinking about: %s', query)
+                    think_result = think_send(query)
+                    logging.info('Think result: %s', think_result)
+
                     stdscr.erase()
                     think_to_send = ''
             else:
@@ -470,6 +495,7 @@ while True:
 
     if current_screen != prev_screen:
         prev_screen = current_screen
+        logging.info('Switching to screen: %s', current_screen)
         stdscr.erase()
 
 
@@ -477,3 +503,4 @@ curses.nocbreak()
 stdscr.keypad(False)
 curses.echo()
 curses.endwin()
+loging.info('Exiting.')
