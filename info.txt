@@ -1,0 +1,286 @@
+What is Protospace?
+===================
+
+Written by Riel.
+
+First, let's get some structural stuff out of the way: Protospace is a 100%
+volunteer-run, Non-Profit Co-op. We have a board of Directors who fulfill some
+necessary administrative tasks, but aside from the additional duties they've
+taken on, they have the same powers as non-directors. Each of our members is
+an individual and brings their own backgrounds and expertise and having
+everyone be equals on an organizational level leads to some of the most
+positive aspects of our community, such as while some of our tools are owned
+by Protospace as an entity, many are on loan from our members. Our community
+is where our biggest strength lies.
+
+
+Do-ocracy
+---------
+
+We're structured as a Do-ocracy, which is to say that we're all empowered as
+individuals to find our own tasks and take them on, both for our own projects
+and with regards to the space. See something that needs fixing and you know
+how? Fix it! Have a skill people are interested in? Teach them? Take on what
+you'd like to take on given the time and energy you have. 
+
+That said, we do have a lot of members. Functionally, what Do-ocracy means is
+that you can do effectively whatever you want as long as it:
+
+- Is not a change to the building and its systems (code and permits may apply)
+- Is safe and does not make things unsafe
+- Can be reasonably undone in less than four hours.
+
+But to add to that, any Do-ocracy this large falls apart if everyone acts as
+an individual. Keep in mind that over 200 people use the space and the things
+you do can affect them and the things they do can affect you, both positively
+and negatively. Be kind to each other. Be excellent. Treat others as you'd
+like to be treated. Treat the equipment and space well because you're sharing
+it. Leave things at least as clean as you found them. If you're concerned
+about someone getting upset with you for doing something with the space, post
+a topic on the forum and you'll find out pretty quickly whether people are for
+or against what you're planning.
+
+There's also an expectation that each of our members put a bit of time into
+the space in addition to keeping your dues current. That could be taking trash
+to the dumpster, becoming a trainer, attending monthly cleans and meetings,
+fixing broken equipment, or whatever else you find.
+
+On the personal side of any community, mistakes and miscommunications happen.
+We have a lot of people here. Generally speaking, things run best when we
+assume good intentions of other people. I think most of us tend to act with
+good intentions, right? So please try to be kind and understanding if anything
+comes up. We want everyone to feel welcome and safe and kind discussion is
+generally preferable to loud confrontation.
+
+Especially be respectful of other people's time. If you sign up for a class
+that you can't make, withdraw so someone else can take that class. If progress
+on something someone is doing isn't going as quickly as you'd like, help! We
+all have lives outside of here and things get delayed. If someone is too busy
+or uninterested in helping you, let it go. We all have those days.
+
+
+Some Policy Stuff
+-----------------
+
+Safety and Fire code rule Supreme.
+
+Please bring your own consumables.
+
+If you're using Protospace for profit, it is expected that a portion of your
+profits will be reinvested in Protospace.
+
+Personal shelves are available, and that space is your own, but we don't have
+enough space for large projects for all our members. If you don't take it home
+and it won't fit on your shelf, it needs a pitch. If it's small and fits out
+of the way but needs a bit of time (like for paint to dry) put a note with
+your name, contact info, and when you'll be back to get it. If it's clamped,
+also write down when the clamps can be removed in case someone needs to use
+them. If it's bigger, the pitch should be made on the forums with 48 hours of
+notice *before* your project shows up. Let people know what your project looks
+like, where you hope to put it, and how long it'll have to be there.
+
+There is no overnight storage in the no-fly zone at the back of the Wood Shop.
+
+
+Community Events
+----------------
+
+We have a number of community events that pop up from time to time. Currently,
+the only consistent one is our Tuesday Night Open House, from 7-9pm. All
+members are encouraged to come out and be social and get to know each other.
+If you're comfortable with the public, please volunteer to tour people around
+the building, and share your enthusiasm! It lets us get to know each other and
+in a place like this where we're sharing a lot of space, knowing the people
+around you is an extremely valuable tool at your disposal. (It also helps with
+vetting, but we'll get to that later).
+
+Aside from that, we have games nights and movie nights and LAN parties and all
+sorts of things. Any vetted member can organize an event.
+
+We also occasionally do group buys and other community things that aren't tied
+directly into socializing, so keep an eye on the forums to see what's
+currently going on.
+
+Now let's move onto some general safety stuff before coming back to talk about
+what to do while you're un-vetted, as well as how larger organizational
+decisions are made here.
+
+
+Safety
+======
+
+General
+-------
+
+This isn't mean to be an exhaustive Safety seminar, because that would be
+impossible. Most tools have different safety requirements associated with them
+that will be gone over during the training on that machinery, and if you're
+ever not comfortable with how to do something safely, please ask. Also,
+everyone does unsafe things sometimes without realizing it, so if someone lets
+you know you're doing something questionable, not matter what your experience
+is, please listen to them—they're probably right.
+
+The main things to keep in mind are to keep your eyes and hearing safe, and
+also to keep yourself from getting snagged by a machine. Sometimes things fly
+across the room unexpectedly. That's life. If it hits you in the arm it might
+do a lot of damage, but it'll do much more if it hits you in the eye. Wear
+safety glasses as much as possible if you're even near *other* people using
+power tools. You also can't really recover your hearing, so if you're around
+loud things, using hearing protection.
+
+With snags, avoid wearing things like loose clothing, long sleeves, rings,
+necklaces, ties, gloves, and keep your hair tied back or under a hat if
+there's any chance it might fall into machinery. Any of these things can mean
+a trip to the ER around a lot of our equipment if you aren't incredibly
+careful.
+
+Speaking of Emergencies, if someone is hurt or in danger, please call 9-1-1.
+You can find the address of the building on most doors. If there's a building
+emergency, like a burst pipe or something, please email
+directors@protospace.ca.
+
+
+Bigger Decisions and Getting Started
+====================================
+
+Getting Started
+---------------
+
+Since you're in this class, you've either been to the Portal or someone has
+done that for you. You can find that at my.protospace.ca. It's where you sign
+up for classes, make payments, see your records, and other things as we add
+them.
+
+You'll want to upload a photo of yourself. It's the photo that will go on your
+keycard when you get vetted. Some corporate partners in the past have asked
+for ID so please have it be a photo of your actual face. You can also use the
+menus to look in the member directory to try to attach faces to names or see
+who our current Directors are.
+
+There's also a link to set up an account on our forum, known as Spacebar. You
+can access the forum directly at forum.protospace.ca, but will need to sign up
+through the Portal in order to have access to the Member section.
+
+We're not going to go into too much depth here, but most of the Forum is
+publicly viewable, aside from the Administrivia section (there's a lock beside
+it) so be mindful that things that only members should see go there. The Forum
+is pretty well broken into categories so it should be pretty obvious what goes
+where.
+
+You've already signed up for a class, but you might not know that you can
+indicate interest by hitting the Interest button beside a course on the
+classes page. The next time a class on that topic gets scheduled, you should
+receive an email letting you know. It's a great way to let everyone know where
+priorities are and lets people with those knowledge-sets know that people
+would really appreciate some guidance.
+
+
+Accessing the Space as an Un-Vetted Member
+------------------------------------------
+
+Until you have keyed access, there must be a vetted member in the space
+willing to chaperone and take accountability for you. Currently, the best way
+to ensure that is to post a message on the forums asking if someone will be
+around, otherwise you can come to the space and ring the bell and hope for the
+best. The only time we can mostly guarantee there will be someone in the
+building is during Open House and Member Meetings, but there are typically
+people here most hours on the weekends as well. Outside of that, it's
+difficult to say.
+
+While you're un-vetted, you should try to attend as many Open Houses as
+possible, and spend time at the space getting to know people. Part of that is
+just learning about the people you're sharing the space with, but also you
+will need to know at least a couple of people to be vetted 
+
+
+Vetting
+-------
+
+On to vetting. When you are vetted, you get voting rights, a shelf, 24/7
+access to the space, and a keycard. 
+
+Everything I'm going to mention here typically happens on a Tuesday night,
+though it can happen any time we have 11 vetted members and a Director
+present. If you are getting vetted on a Tuesday, please try to find a director
+as soon as you get here, as this process can take some time. To be vetted, you
+need to tick a few boxes:
+
+- You must be sponsored by 2 vetted members in good standing
+- You must have been a member for at least 4 weeks.
+- You must be current on your dues.
+- You must show ID and provide a photo for the member directory.
+- You must complete a short 1-on-1 chat with a director or designate. This is
+  about making sure you have the knowledge you need from us—it's not a
+screening interview.
+- You should also be given an in-person tour of the space, including opening
+  and closing procedures.
+
+Once you've been vetted, you can request a key from the Portal and get your
+access. Find a shelf and put your name on it, and start voting at Monthly
+Member Meetings.
+
+
+Bigger Decisions
+----------------
+
+Remember the "11 vetted members" thing? We call that "Quorum" and it's the
+amount of vetted members we need to make any sort of organizational decision,
+whether it be accepting a new member or purchasing a new tool.
+
+We have scheduled Monthly Member Meetings on the third week of every month (it
+alternates days: Thursdays on odd months, Wednesdays on even months) at 7pm,
+and our Annual General Meeting in June. You can also be vetted on these days.
+
+These meetings are where all our bigger decisions get made, including whether
+or not to move the next meeting, so please check the calendar in the wiki or
+the Forum to make sure they haven't moved, or, better yet, attend and stay in
+the loop.
+
+Vetted members are able make motions for new policies or purchases but these
+must be posted on the Forum *at least* 72 before the meeting. This lets us
+discuss any issues with it before the meeting and hopefully has us closer to a
+consensus. Motions are then voted on with a yes, no, or abstention, and
+require a 75% approval to pass.
+
+Sometimes the motion is not specific enough to pass, at which point it is
+differed to a small group of people with relevant expertise and enthusiasm to
+hone and make a more concrete decision on.
+
+The board of directors is voted in the same way, but exclusively at the Annual
+General Meeting.
+
+
+Participating in Decision-making
+--------------------------------
+
+Most of the debate regarding decisions happens on the Forum. It's where people
+post motions and discuss general interests even before ideas get formed to the
+point that a motion comes together. If there's something you'd like to see but
+don't, that's a good place to start. If you're knowledgeable about something
+that gets deferred at a Member's Meeting, you can probably also join the group
+of people entrusted in honing the motion.
+
+If you don't feel strongly about something or wouldn't actually use the thing
+being discussed, weighing in may be counter-productive. Remember that we are a
+Do-ocracy and arguing whether A is better than B when neither affect you can
+just make things more complicated for the people who just want to do the
+thing.
+
+And, of course, come to the Member's Meetings and vote.
+
+
+To Finish Off
+-------------
+
+I touched on this before, but we don't have a cleaning staff, so please, clean
+up after yourself for both courtesy and safety reasons. In addition, the 3rd
+Saturday of every month is the Monthly Group Clean. Areas to be cleaned and a
+Clean Leader are usually discussed at the preceding member's meeting. It
+generally runs from about 10am to 2pm, and lunch is provided.
+
+And again, I really do want to stress that we want everyone to feel welcome
+here. In a shared space with this many people that depends on people being
+excellent to each other. Treat others as you'd like to be treated, and if
+you're trying to find out something out about this place I haven't covered,
+check the wiki or the Forum, or ask around. Most of us are friendly most of
+the time.

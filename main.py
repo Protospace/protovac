@@ -28,6 +28,9 @@ ESCAPE_KEY = 27
 
 TIMEZONE_CALGARY = pytz.timezone('America/Edmonton')
 
+with open('info.txt') as f:
+    PROTO_INFO = f.read()
+
 def format_date(datestr):
     d = datetime.strptime(datestr, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=pytz.UTC)
     d = d.astimezone(TIMEZONE_CALGARY)
@@ -171,6 +174,7 @@ classes = {}
 classes_start = 0
 protocoin = {}
 protocoin_line = 0
+info_line = 0
 
 logging.info('Starting main loop...')
 
@@ -184,13 +188,14 @@ while True:
         stdscr.addstr(5, 1, '|_____|  |____| |___|`.___.\'   |_____|   `.___.\'     \_/|____| |____|`.____ .\'')
         stdscr.addstr(7, 1, '                                         UNIVERSAL COMPUTER')
 
-        stdscr.addstr(9, 4, '[S] Stats')
-        stdscr.addstr(11, 4, '[N] Sign')
-        stdscr.addstr(13, 4, '[C] Classes')
-        stdscr.addstr(15, 4, '[P] Protocoin')
+        stdscr.addstr(9, 4, '[I] Info')
+        stdscr.addstr(11, 4, '[S] Stats')
+        stdscr.addstr(13, 4, '[N] Sign')
+        stdscr.addstr(15, 4, '[C] Classes')
+        stdscr.addstr(17, 4, '[P] Protocoin')
         if wa_api_key:
             stdscr.addstr(17, 4, '[T] Think')
-        stdscr.addstr(19, 4, '[A] About')
+        stdscr.addstr(21, 4, '[A] About')
 
         stdscr.addstr(23, 1, '              Copyright (c) 1985 Bikeshed Computer Systems Corp.')
         stdscr.clrtoeol()
@@ -270,6 +275,17 @@ while True:
             classes = fetch_classes()
             stdscr.erase()
             skip_input = True
+    elif current_screen == 'info':
+        stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
+        lines = PROTO_INFO.split('\n')
+
+        offset = 2
+        for num, line in enumerate(lines[info_line:info_line+20]):
+            stdscr.addstr(num + offset, 1, line)
+
+        stdscr.addstr(23, 1, '[B] Back  [J] Down  [K] Up')
+        stdscr.clrtoeol()
+        stdscr.refresh()
     elif current_screen == 'protocoin':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Protocoin')
@@ -395,6 +411,8 @@ while True:
     if current_screen == 'home':
         if button == 's':
             current_screen = 'stats'
+        elif button == 'i':
+            current_screen = 'info'
         elif button == 'n':
             current_screen = 'sign'
         elif button == 'c':
@@ -430,6 +448,18 @@ while True:
         elif button == 'k':
             if classes_start > 0:
                 classes_start -= 1
+                stdscr.erase()
+    elif current_screen == 'info':
+        if button == 'b':
+            current_screen = 'home'
+            protocoin = {}
+            info_line = 0
+        elif button == 'j':
+            info_line += 5
+            stdscr.erase()
+        elif button == 'k':
+            if info_line > 0:
+                info_line -= 5
                 stdscr.erase()
     elif current_screen == 'protocoin':
         if button == 'b':
