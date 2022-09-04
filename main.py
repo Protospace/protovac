@@ -3,7 +3,7 @@
 import os, logging
 DEBUG = os.environ.get('DEBUG')
 logging.basicConfig(
-    filename='protovax.log', encoding='utf-8',
+    filename='protovax.log',
     format='[%(asctime)s] %(levelname)s %(module)s/%(funcName)s - %(message)s',
     level=logging.DEBUG if DEBUG else logging.INFO)
 
@@ -14,6 +14,7 @@ import curses
 import requests
 import pytz
 import re
+import os
 from datetime import datetime
 
 try:
@@ -22,13 +23,12 @@ try:
 except:
     wa_api_key = None
 
-ENTER_KEY = 10
-BACKSPACE_KEY = 263
 ESCAPE_KEY = 27
 
 TIMEZONE_CALGARY = pytz.timezone('America/Edmonton')
 
-with open('info.txt') as f:
+location = os.path.dirname(os.path.realpath(__file__))
+with open(location + '/info.txt') as f:
     PROTO_INFO = f.read()
 
 def format_date(datestr):
@@ -194,7 +194,7 @@ while True:
         stdscr.addstr(15, 4, '[C] Classes')
         stdscr.addstr(17, 4, '[P] Protocoin')
         if wa_api_key:
-            stdscr.addstr(17, 4, '[T] Think')
+            stdscr.addstr(19, 4, '[T] Think')
         stdscr.addstr(21, 4, '[A] About')
 
         stdscr.addstr(23, 1, '              Copyright (c) 1985 Bikeshed Computer Systems Corp.')
@@ -442,10 +442,10 @@ while True:
             current_screen = 'home'
             classes = {}
             classes_start = 0
-        elif button == 'j':
+        elif button == 'j' or c == curses.KEY_DOWN:
             classes_start += 1
             stdscr.erase()
-        elif button == 'k':
+        elif button == 'k' or c == curses.KEY_UP:
             if classes_start > 0:
                 classes_start -= 1
                 stdscr.erase()
@@ -454,33 +454,33 @@ while True:
             current_screen = 'home'
             protocoin = {}
             info_line = 0
-        elif button == 'j':
-            info_line += 5
+        elif button == 'j' or c == curses.KEY_DOWN:
+            info_line += 19
             stdscr.erase()
-        elif button == 'k':
+        elif button == 'k' or c == curses.KEY_UP:
             if info_line > 0:
-                info_line -= 5
+                info_line -= 19
                 stdscr.erase()
     elif current_screen == 'protocoin':
         if button == 'b':
             current_screen = 'home'
             protocoin = {}
             protocoin_line = 0
-        elif button == 'j':
+        elif button == 'j' or c == curses.KEY_DOWN:
             protocoin_line += 1
             stdscr.erase()
-        elif button == 'k':
+        elif button == 'k' or c == curses.KEY_UP:
             if protocoin_line > 0:
                 protocoin_line -= 1
                 stdscr.erase()
     elif current_screen == 'sign':
         if sign_to_send:
-            if c == BACKSPACE_KEY:
+            if c == curses.KEY_BACKSPACE:
                 sign_to_send = sign_to_send[:-2] + '_'
             elif c == ESCAPE_KEY:
                 sign_to_send = ''
                 stdscr.erase()
-            elif c == ENTER_KEY:
+            elif c == curses.KEY_ENTER:
                 if len(sign_to_send) > 1:
                     stdscr.addstr(15, 4, 'Sending...')
                     stdscr.refresh()
@@ -496,12 +496,12 @@ while True:
             sign_to_send = '_'
     elif current_screen == 'think':
         if think_to_send:
-            if c == BACKSPACE_KEY:
+            if c == curses.KEY_BACKSPACE:
                 think_to_send = think_to_send[:-2] + '_'
             elif c == ESCAPE_KEY:
                 think_to_send = ''
                 stdscr.erase()
-            elif c == ENTER_KEY:
+            elif c == curses.KEY_ENTER:
                 if len(think_to_send) > 1:
                     stdscr.addstr(9, 4, 'Thinking...')
                     stdscr.clrtoeol()

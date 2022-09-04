@@ -146,10 +146,8 @@ Bigger Decisions and Getting Started
 Getting Started
 ---------------
 
-Since you're in this class, you've either been to the Portal or someone has
-done that for you. You can find that at my.protospace.ca. It's where you sign
-up for classes, make payments, see your records, and other things as we add
-them.
+The Protospace member portal is at my.protospace.ca. It's where you sign up for
+classes, make payments, see your records, and other things as we add them.
 
 You'll want to upload a photo of yourself. It's the photo that will go on your
 keycard when you get vetted. Some corporate partners in the past have asked
@@ -164,11 +162,10 @@ through the Portal in order to have access to the Member section.
 We're not going to go into too much depth here, but most of the Forum is
 publicly viewable, aside from the Administrivia section (there's a lock beside
 it) so be mindful that things that only members should see go there. The Forum
-is pretty well broken into categories so it should be pretty obvious what goes
-where.
+is pretty well broken into categories so it should be obvious what goes where.
 
 You've already signed up for a class, but you might not know that you can
-indicate interest by hitting the Interest button beside a course on the
+indicate interest by hitting the Interest+ button beside a course on the
 classes page. The next time a class on that topic gets scheduled, you should
 receive an email letting you know. It's a great way to let everyone know where
 priorities are and lets people with those knowledge-sets know that people
@@ -196,8 +193,8 @@ will need to know at least a couple of people to be vetted
 Vetting
 -------
 
-On to vetting. When you are vetted, you get voting rights, a shelf, 24/7
-access to the space, and a keycard. 
+When you are vetted, you get voting rights, a shelf, 24/7 access to the space,
+and a keycard. 
 
 Everything I'm going to mention here typically happens on a Tuesday night,
 though it can happen any time we have 11 vetted members and a Director
@@ -205,13 +202,13 @@ present. If you are getting vetted on a Tuesday, please try to find a director
 as soon as you get here, as this process can take some time. To be vetted, you
 need to tick a few boxes:
 
-- You must be sponsored by 2 vetted members in good standing
+- You must be sponsored by 2 vetted members in good standing.
 - You must have been a member for at least 4 weeks.
 - You must be current on your dues.
 - You must show ID and provide a photo for the member directory.
 - You must complete a short 1-on-1 chat with a director or designate. This is
   about making sure you have the knowledge you need from us—it's not a
-screening interview.
+  screening interview.
 - You should also be given an in-person tour of the space, including opening
   and closing procedures.
 
