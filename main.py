@@ -31,6 +31,13 @@ location = os.path.dirname(os.path.realpath(__file__))
 with open(location + '/info.txt') as f:
     PROTO_INFO = f.read()
 
+for num, line in enumerate(PROTO_INFO.split('\n')):
+    try:
+        line.encode('ascii')
+    except UnicodeEncodeError:
+        print('non-ascii found in line:', num+1)
+        raise
+
 def format_date(datestr):
     d = datetime.strptime(datestr, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=pytz.UTC)
     d = d.astimezone(TIMEZONE_CALGARY)
