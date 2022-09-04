@@ -23,7 +23,8 @@ try:
 except:
     wa_api_key = None
 
-ESCAPE_KEY = 27
+KEY_ESCAPE = 27
+KEY_ENTER = 10
 
 TIMEZONE_CALGARY = pytz.timezone('America/Edmonton')
 
@@ -484,10 +485,10 @@ while True:
         if sign_to_send:
             if c == curses.KEY_BACKSPACE:
                 sign_to_send = sign_to_send[:-2] + '_'
-            elif c == ESCAPE_KEY:
+            elif c == KEY_ESCAPE:
                 sign_to_send = ''
                 stdscr.erase()
-            elif c == curses.KEY_ENTER:
+            elif c == KEY_ENTER:
                 if len(sign_to_send) > 1:
                     stdscr.addstr(15, 4, 'Sending...')
                     stdscr.refresh()
@@ -505,10 +506,10 @@ while True:
         if think_to_send:
             if c == curses.KEY_BACKSPACE:
                 think_to_send = think_to_send[:-2] + '_'
-            elif c == ESCAPE_KEY:
+            elif c == KEY_ESCAPE:
                 think_to_send = ''
                 stdscr.erase()
-            elif c == curses.KEY_ENTER:
+            elif c == KEY_ENTER:
                 if len(think_to_send) > 1:
                     stdscr.addstr(9, 4, 'Thinking...')
                     stdscr.clrtoeol()
