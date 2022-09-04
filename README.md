@@ -4,6 +4,8 @@ Protovac is software for an old dumb terminal CRT screen that's used to display
 random info about Protospace. There's a few interactive features like sending
 messages to a huge marquee LED sign and performing calculations.
 
+![and old CRT screen from 1983 with a keyboard infront of it](media/pic1.jpg)
+
 Here are some of its screens:
 
 ```
