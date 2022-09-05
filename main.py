@@ -434,19 +434,19 @@ while True:
         elif button == 'p':
             current_screen = 'protocoin'
     elif current_screen == 'debug':
-        if button == 'b':
+        if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
         if button == 'x':
             break
     elif current_screen == 'stats':
-        if button == 'b':
+        if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
             stats = {}
     elif current_screen == 'about':
-        if button == 'b':
+        if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
     elif current_screen == 'classes':
-        if button == 'b':
+        if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
             classes = {}
             classes_start = 0
@@ -458,7 +458,7 @@ while True:
                 classes_start -= 1
                 stdscr.erase()
     elif current_screen == 'info':
-        if button == 'b':
+        if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
             protocoin = {}
             info_line = 0
@@ -470,7 +470,7 @@ while True:
                 info_line -= 19
                 stdscr.erase()
     elif current_screen == 'protocoin':
-        if button == 'b':
+        if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
             protocoin = {}
             protocoin_line = 0
@@ -498,7 +498,7 @@ while True:
             else:
                 if c < 127 and c > 31:
                     sign_to_send = sign_to_send[:-1] + chr(c) + '_'
-        elif button == 'b':
+        elif button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
         elif button == 'e':
             sign_to_send = '_'
@@ -525,7 +525,7 @@ while True:
             else:
                 if c < 127 and c > 31:
                     think_to_send = think_to_send[:-1] + chr(c) + '_'
-        elif button == 'b':
+        elif button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
             think_result = ''
         elif button == 'e':
