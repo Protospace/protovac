@@ -149,11 +149,18 @@ def think_send(query):
     elif len(result) == 0 and not img_url:
         result = 'Error'
 
+    result = result.replace('Wolfram|Alpha', 'Protovac')
     result = result.replace('Stephen Wolfram', 'Tanner') # lol
     result = result.replace('and his team', '')
 
     if '(according to' in result:
         result = result.split('(according to')[0]
+
+    if '(asked' in result:
+        result = result.split('(asked')[0]
+
+    if '(although' in result:
+        result = result.split('(although')[0]
 
     return result
 
