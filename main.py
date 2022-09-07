@@ -384,7 +384,16 @@ while True:
             stdscr.addstr(23, 1, '[B] Back')
 
         if think_result:
-            stdscr.addstr(9, 4, think_result)
+            for _ in range(100):
+                try:
+                    stdscr.addstr(9, 4, think_result)
+                    break
+                except:
+                    think_result = think_result[:-5]
+            stdscr.addstr(22, 1, '')
+            stdscr.clrtoeol()
+            stdscr.addstr(23, 1, '[B] Back')
+            stdscr.clrtoeol()
 
         if not think_result and not think_to_send:
             stdscr.addstr(9, 1, 'Examples:')
