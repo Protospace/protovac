@@ -194,17 +194,26 @@ while True:
         stdscr.addstr(3, 1, '  |  ___/  |  __ /  | |   | |    | |    | |   | |  \ \ / / / ___ \  | |       ')
         stdscr.addstr(4, 1, ' _| |_    _| |  \ \_\  `-\'  /   _| |_   \  `-\'  /   \ \' /_/ /   \ \_\ `.___.\'\\')
         stdscr.addstr(5, 1, '|_____|  |____| |___|`.___.\'   |_____|   `.___.\'     \_/|____| |____|`.____ .\'')
+        stdscr.addstr(6, 1, '')
         stdscr.addstr(7, 1, '                                         UNIVERSAL COMPUTER')
-
+        stdscr.addstr(8, 1, '')
         stdscr.addstr(9, 4, '[I] Info')
+        stdscr.addstr(10, 1, '')
         stdscr.addstr(11, 4, '[S] Stats')
+        stdscr.addstr(12, 1, '')
         stdscr.addstr(13, 4, '[N] Sign')
+        stdscr.addstr(14, 1, '')
         stdscr.addstr(15, 4, '[C] Classes')
+        stdscr.addstr(16, 1, '')
         stdscr.addstr(17, 4, '[P] Protocoin')
+        stdscr.addstr(18, 1, '')
         if wa_api_key:
             stdscr.addstr(19, 4, '[T] Think')
+        else:
+            stdscr.addstr(19, 1, '')
+        stdscr.addstr(20, 1, '')
         stdscr.addstr(21, 4, '[A] About')
-
+        stdscr.addstr(22, 1, '')
         stdscr.addstr(23, 1, '              Copyright (c) 1985 Bikeshed Computer Systems Corp.')
         stdscr.clrtoeol()
         stdscr.refresh()
