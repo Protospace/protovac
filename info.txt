@@ -4,10 +4,10 @@ What is Protospace?
 Written by Riel.
 
 First, let's get some structural stuff out of the way: Protospace is a 100%
-volunteer-run, Non-Profit Co-op. We have a board of Directors who fulfill some
+volunteer-run, Non-Profit Co-op. We have a Board of Directors who fulfill some
 necessary administrative tasks, but aside from the additional duties they've
 taken on, they have the same powers as non-directors. Each of our members is
-an individual and brings their own backgrounds and expertise and having
+an individual and brings their own background and expertise. Having
 everyone be equals on an organizational level leads to some of the most
 positive aspects of our community, such as while some of our tools are owned
 by Protospace as an entity, many are on loan from our members. Our community
@@ -20,7 +20,7 @@ Do-ocracy
 We're structured as a Do-ocracy, which is to say that we're all empowered as
 individuals to find our own tasks and take them on, both for our own projects
 and with regards to the space. See something that needs fixing and you know
-how? Fix it! Have a skill people are interested in? Teach them? Take on what
+how? Fix it! Have a skill people are interested in? Teach them! Take on what
 you'd like to take on given the time and energy you have. 
 
 That said, we do have a lot of members. Functionally, what Do-ocracy means is
@@ -34,7 +34,7 @@ But to add to that, any Do-ocracy this large falls apart if everyone acts as
 an individual. Keep in mind that over 200 people use the space and the things
 you do can affect them and the things they do can affect you, both positively
 and negatively. Be kind to each other. Be excellent. Treat others as you'd
-like to be treated. Treat the equipment and space well because you're sharing
+like to be treated. Treat the equipment and space well, because you're sharing
 it. Leave things at least as clean as you found them. If you're concerned
 about someone getting upset with you for doing something with the space, post
 a topic on the forum and you'll find out pretty quickly whether people are for
@@ -112,12 +112,12 @@ Safety
 General
 -------
 
-This isn't mean to be an exhaustive Safety seminar, because that would be
+This isn't mean to be an exhaustive safety seminar, because that would be
 impossible. Most tools have different safety requirements associated with them
 that will be gone over during the training on that machinery, and if you're
 ever not comfortable with how to do something safely, please ask. Also,
 everyone does unsafe things sometimes without realizing it, so if someone lets
-you know you're doing something questionable, not matter what your experience
+you know you're doing something questionable, no matter what your experience
 is, please listen to them - they're probably right.
 
 The main things to keep in mind are to keep your eyes and hearing safe, and
@@ -126,15 +126,14 @@ across the room unexpectedly. That's life. If it hits you in the arm it might
 do a lot of damage, but it'll do much more if it hits you in the eye. Wear
 safety glasses as much as possible if you're even near *other* people using
 power tools. You also can't really recover your hearing, so if you're around
-loud things, using hearing protection.
+loud things, use hearing protection.
 
 With snags, avoid wearing things like loose clothing, long sleeves, rings,
 necklaces, ties, gloves, and keep your hair tied back or under a hat if
 there's any chance it might fall into machinery. Any of these things can mean
-a trip to the ER around a lot of our equipment if you aren't incredibly
-careful.
+a trip to the ER around a lot of our equipment if you aren't careful.
 
-Speaking of Emergencies, if someone is hurt or in danger, please call 9-1-1.
+Speaking of emergencies, if someone is hurt or in danger, please call 9-1-1.
 You can find the address of the building on most doors. If there's a building
 emergency, like a burst pipe or something, please email
 directors@protospace.ca.
@@ -150,7 +149,7 @@ The Protospace member portal is at my.protospace.ca. It's where you sign up for
 classes, make payments, see your records, and other things as we add them.
 
 You'll want to upload a photo of yourself. It's the photo that will go on your
-keycard when you get vetted. Some corporate partners in the past have asked
+keycard when you get vetted. Some corporate partners, in the past, have asked
 for ID so please have it be a photo of your actual face. You can also use the
 menus to look in the member directory to try to attach faces to names or see
 who our current Directors are.
@@ -159,16 +158,16 @@ There's also a link to set up an account on our forum, known as Spacebar. You
 can access the forum directly at forum.protospace.ca, but will need to sign up
 through the Portal in order to have access to the Member section.
 
-We're not going to go into too much depth here, but most of the Forum is
+We're not going to go into too much depth here, but most of the forum is
 publicly viewable, aside from the Administrivia section (there's a lock beside
-it) so be mindful that things that only members should see go there. The Forum
+it) so be mindful that things that only members should see go there. The forum
 is pretty well broken into categories so it should be obvious what goes where.
 
-You've already signed up for a class, but you might not know that you can
-indicate interest by hitting the Interest+ button beside a course on the
-classes page. The next time a class on that topic gets scheduled, you should
-receive an email letting you know. It's a great way to let everyone know where
-priorities are and lets people with those knowledge-sets know that people
+Maybe you've signed up for a class, but you might not know that you can
+indicate interest in others by hitting the Interest+ button beside a course on
+the classes page. The next time a class on that topic gets scheduled, you 
+should receive an email letting you know. It's a great way to let everyone know
+where priorities are and lets people with those knowledge-sets know that people
 would really appreciate some guidance.
 
 
@@ -187,7 +186,7 @@ difficult to say.
 While you're un-vetted, you should try to attend as many Open Houses as
 possible, and spend time at the space getting to know people. Part of that is
 just learning about the people you're sharing the space with, but also you
-will need to know at least a couple of people to be vetted 
+will need to know at least a couple of people to be vetted.
 
 
 Vetting
@@ -198,7 +197,7 @@ and a keycard.
 
 Everything I'm going to mention here typically happens on a Tuesday night,
 though it can happen any time we have 11 vetted members and a Director
-present. If you are getting vetted on a Tuesday, please try to find a director
+present. If you are getting vetted on a Tuesday, please try to find a Director
 as soon as you get here, as this process can take some time. To be vetted, you
 need to tick a few boxes:
 
@@ -206,7 +205,7 @@ need to tick a few boxes:
 - You must have been a member for at least 4 weeks.
 - You must be current on your dues.
 - You must show ID and provide a photo for the member directory.
-- You must complete a short 1-on-1 chat with a director or designate. This is
+- You must complete a short 1-on-1 chat with a Director or designate. This is
   about making sure you have the knowledge you need from us - it's not a
   screening interview.
 - You should also be given an in-person tour of the space, including opening
@@ -222,7 +221,7 @@ Bigger Decisions
 
 Remember the "11 vetted members" thing? We call that "Quorum" and it's the
 amount of vetted members we need to make any sort of organizational decision,
-whether it be accepting a new member or purchasing a new tool.
+whether it is accepting a new member or purchasing a new tool.
 
 We have scheduled Monthly Member Meetings on the third week of every month (it
 alternates days: Thursdays on odd months, Wednesdays on even months) at 7pm,
@@ -230,17 +229,17 @@ and our Annual General Meeting in June. You can also be vetted on these days.
 
 These meetings are where all our bigger decisions get made, including whether
 or not to move the next meeting, so please check the calendar in the wiki or
-the Forum to make sure they haven't moved, or, better yet, attend and stay in
+the forum to make sure they haven't moved, or, better yet, attend and stay in
 the loop.
 
 Vetted members are able make motions for new policies or purchases but these
-must be posted on the Forum *at least* 72 before the meeting. This lets us
+must be posted on the forum *at least* 72 before the meeting. This lets us
 discuss any issues with it before the meeting and hopefully has us closer to a
 consensus. Motions are then voted on with a yes, no, or abstention, and
 require a 75% approval to pass.
 
 Sometimes the motion is not specific enough to pass, at which point it is
-differed to a small group of people with relevant expertise and enthusiasm to
+deferred to a small group of people with relevant expertise and enthusiasm to
 hone and make a more concrete decision on.
 
 The board of directors is voted in the same way, but exclusively at the Annual
@@ -250,7 +249,7 @@ General Meeting.
 Participating in Decision-making
 --------------------------------
 
-Most of the debate regarding decisions happens on the Forum. It's where people
+Most of the debate regarding decisions happens on the forum. It's where people
 post motions and discuss general interests even before ideas get formed to the
 point that a motion comes together. If there's something you'd like to see but
 don't, that's a good place to start. If you're knowledgeable about something
@@ -279,5 +278,5 @@ And again, I really do want to stress that we want everyone to feel welcome
 here. In a shared space with this many people that depends on people being
 excellent to each other. Treat others as you'd like to be treated, and if
 you're trying to find out something out about this place I haven't covered,
-check the wiki or the Forum, or ask around. Most of us are friendly most of
+check the wiki or the forum, or ask around. Most of us are friendly most of
 the time.
