@@ -15,6 +15,7 @@ import requests
 import pytz
 import re
 import os
+import time
 from datetime import datetime
 
 try:
@@ -168,19 +169,14 @@ skip_input = False
 current_screen = 'home'
 prev_screen = current_screen
 
-c = 0
-
-# highlighting:
-#wattron(menu_win, A_REVERSE)
-#mvwaddstr(menu_win, y, x, choices[i])
-#wattroff(menu_win, A_REVERSE)
-
 stdscr = curses.initscr()
 curses.noecho()
 curses.cbreak()
 stdscr.keypad(True)
 curses.curs_set(0)
 
+highlight_keys = False
+highlight_debounce = time.time()
 sign_to_send = ''
 think_to_send = ''
 think_result = ''
@@ -194,6 +190,8 @@ info_line = 0
 logging.info('Starting main loop...')
 
 while True:
+    c = 0
+
     if current_screen == 'home':
         stdscr.addstr(0, 1, ' _______  _______      ___    _________    ___   ____   ____  _        ______ ')
         stdscr.addstr(1, 1, '|_   __ \|_   __ \   .\'   `. |  _   _  | .\'   `.|_  _| |_  _|/ \     .\' ___  |')
@@ -204,22 +202,29 @@ while True:
         stdscr.addstr(6, 1, '')
         stdscr.addstr(7, 1, '                                         UNIVERSAL COMPUTER')
         stdscr.addstr(8, 1, '')
-        stdscr.addstr(9, 4, '[I] Info')
+        stdscr.addstr(9, 4, '[I]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(9, 8, 'Info')
         stdscr.addstr(10, 1, '')
-        stdscr.addstr(11, 4, '[S] Stats')
+        stdscr.addstr(11, 4, '[S]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(11, 8, 'Stats')
         stdscr.addstr(12, 1, '')
-        stdscr.addstr(13, 4, '[N] Sign')
+        stdscr.addstr(13, 4, '[N]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(13, 8, 'Sign')
         stdscr.addstr(14, 1, '')
-        stdscr.addstr(15, 4, '[C] Classes')
+        stdscr.addstr(15, 4, '[C]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(15, 8, 'Classes')
         stdscr.addstr(16, 1, '')
-        stdscr.addstr(17, 4, '[P] Protocoin')
+        stdscr.addstr(17, 4, '[P]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(17, 8, 'Protocoin')
         stdscr.addstr(18, 1, '')
         if wa_api_key:
-            stdscr.addstr(19, 4, '[T] Think')
+            stdscr.addstr(19, 4, '[T]', curses.A_REVERSE if highlight_keys else 0)
+            stdscr.addstr(19, 8, 'Think')
         else:
             stdscr.addstr(19, 1, '')
         stdscr.addstr(20, 1, '')
-        stdscr.addstr(21, 4, '[A] About')
+        stdscr.addstr(21, 4, '[A]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(21, 8, 'About')
         stdscr.addstr(22, 1, '')
         stdscr.addstr(23, 1, '              Copyright (c) 1985 Bikeshed Computer Systems Corp.')
         stdscr.clrtoeol()
@@ -231,7 +236,7 @@ while True:
         stdscr.addstr(5, 1, str.format('Character pressed = {0}', c))
         stdscr.clrtoeol()
 
-        stdscr.addstr(23, 1, '[B] Back')
+        stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
         stdscr.clrtoeol()
         stdscr.refresh()
     elif current_screen == 'stats':
@@ -257,7 +262,7 @@ while True:
         else:
             stdscr.addstr(5, 1, 'Loading...')
 
-        stdscr.addstr(23, 1, '[B] Back')
+        stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
         stdscr.clrtoeol()
         stdscr.refresh()
 
@@ -291,7 +296,7 @@ while True:
         else:
             stdscr.addstr(5, 1, 'Loading...')
 
-        stdscr.addstr(23, 1, '[B] Back  [J] Down  [K] Up')
+        stdscr.addstr(23, 1, '[B] Back  [J] Down  [K] Up', curses.A_REVERSE if highlight_keys else 0)
         stdscr.clrtoeol()
         stdscr.refresh()
 
@@ -307,7 +312,7 @@ while True:
         for num, line in enumerate(lines[info_line:info_line+20]):
             stdscr.addstr(num + offset, 1, line)
 
-        stdscr.addstr(23, 1, '[B] Back  [J] Down  [K] Up')
+        stdscr.addstr(23, 1, '[B] Back  [J] Down  [K] Up', curses.A_REVERSE if highlight_keys else 0)
         stdscr.clrtoeol()
         stdscr.refresh()
     elif current_screen == 'protocoin':
@@ -343,7 +348,7 @@ while True:
         else:
             stdscr.addstr(5, 1, 'Loading...')
 
-        stdscr.addstr(23, 1, '[B] Back  [J] Down  [K] Up')
+        stdscr.addstr(23, 1, '[B] Back  [J] Down  [K] Up', curses.A_REVERSE if highlight_keys else 0)
         stdscr.clrtoeol()
         stdscr.refresh()
 
@@ -364,7 +369,7 @@ while True:
             stdscr.addstr(23, 1, '[ENTER] Send  [ESC] Cancel')
         else:
             stdscr.addstr(8, 4, '[E] Edit message')
-            stdscr.addstr(23, 1, '[B] Back')
+            stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
 
         stdscr.clrtoeol()
         stdscr.refresh()
@@ -381,7 +386,7 @@ while True:
             stdscr.addstr(23, 1, '[ENTER] Send  [ESC] Cancel')
         else:
             stdscr.addstr(7, 4, '[E] Edit prompt')
-            stdscr.addstr(23, 1, '[B] Back')
+            stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
 
         if think_result:
             for _ in range(100):
@@ -392,7 +397,7 @@ while True:
                     think_result = think_result[:-5]
             stdscr.addstr(22, 1, '')
             stdscr.clrtoeol()
-            stdscr.addstr(23, 1, '[B] Back')
+            stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
             stdscr.clrtoeol()
 
         if not think_result and not think_to_send:
@@ -423,9 +428,15 @@ while True:
         stdscr.addstr(18, 1, '----------------')
         stdscr.addstr(20, 1, 'Thanks to Peter for lending the Morrow MTD-60 terminal and Jamie for the Pi.')
 
-        stdscr.addstr(23, 1, '[B] Back')
+        stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.refresh()
 
     stdscr.move(23, 79)
+
+    if highlight_keys:
+        time.sleep(0.5)
+        highlight_keys = False
+        continue
 
     if skip_input:
         skip_input = False
@@ -440,6 +451,12 @@ while True:
         button = chr(c).lower()
     except:
         button = None
+
+    def try_highlight():
+        global c, highlight_debounce, highlight_keys
+        if c and time.time() - highlight_debounce > 0.6:
+            highlight_debounce = time.time()
+            highlight_keys = True
 
     if current_screen == 'home':
         if button == 's':
@@ -458,18 +475,26 @@ while True:
             current_screen = 'about'
         elif button == 'p':
             current_screen = 'protocoin'
+        else:
+            try_highlight()
     elif current_screen == 'debug':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
         if button == 'x':
             break
+        else:
+            try_highlight()
     elif current_screen == 'stats':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
             stats = {}
+        else:
+            try_highlight()
     elif current_screen == 'about':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
+        else:
+            try_highlight()
     elif current_screen == 'classes':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
@@ -482,6 +507,8 @@ while True:
             if classes_start > 0:
                 classes_start -= 1
                 stdscr.erase()
+        else:
+            try_highlight()
     elif current_screen == 'info':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
@@ -494,6 +521,8 @@ while True:
             if info_line > 0:
                 info_line -= 19
                 stdscr.erase()
+        else:
+            try_highlight()
     elif current_screen == 'protocoin':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
@@ -506,6 +535,8 @@ while True:
             if protocoin_line > 0:
                 protocoin_line -= 1
                 stdscr.erase()
+        else:
+            try_highlight()
     elif current_screen == 'sign':
         if sign_to_send:
             if c == curses.KEY_BACKSPACE:
@@ -527,6 +558,8 @@ while True:
             current_screen = 'home'
         elif button == 'e':
             sign_to_send = '_'
+        else:
+            try_highlight()
     elif current_screen == 'think':
         if think_to_send:
             if c == curses.KEY_BACKSPACE:
@@ -555,6 +588,8 @@ while True:
             think_result = ''
         elif button == 'e':
             think_to_send = '_'
+        else:
+            try_highlight()
 
     if current_screen != prev_screen:
         prev_screen = current_screen
