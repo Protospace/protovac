@@ -154,14 +154,10 @@ def think_send(query):
     result = result.replace('Stephen Wolfram', 'Tanner') # lol
     result = result.replace('and his team', '')
 
-    if '(according to' in result:
-        result = result.split('(according to')[0]
-
-    if '(asked' in result:
-        result = result.split('(asked')[0]
-
-    if '(although' in result:
-        result = result.split('(although')[0]
+    for word in ['according to', 'asked', 'although', 'approximately']:
+        idx = result.lower().find('('+word)
+        if idx > 0:
+            result = result[:idx-1]
 
     if result == 'Error':
         result = 'INSUFFICIENT DATA FOR A MEANINGFUL ANSWER.'
