@@ -367,7 +367,7 @@ while True:
             stdscr.clrtoeol()
             stdscr.addstr(23, 1, '[ENTER] Send  [ESC] Cancel')
         else:
-            stdscr.addstr(8, 4, '[E] Edit message')
+            stdscr.addstr(8, 4, '[E] Edit message', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
 
         stdscr.clrtoeol()
@@ -384,7 +384,7 @@ while True:
             stdscr.clrtoeol()
             stdscr.addstr(23, 1, '[ENTER] Send  [ESC] Cancel')
         else:
-            stdscr.addstr(7, 4, '[E] Edit prompt')
+            stdscr.addstr(7, 4, '[E] Edit prompt', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
 
         if think_result:
