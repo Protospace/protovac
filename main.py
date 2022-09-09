@@ -147,7 +147,7 @@ def think_send(query):
 
     if len(result) > 500:
         result = result[:500] + '... truncated.'
-    elif len(result) == 0 and not img_url:
+    elif len(result) == 0:
         result = 'Error'
 
     result = result.replace('Wolfram|Alpha', 'Protovac')
@@ -162,6 +162,9 @@ def think_send(query):
 
     if '(although' in result:
         result = result.split('(although')[0]
+
+    if result == 'Error':
+        result = 'INSUFFICIENT DATA FOR A MEANINGFUL ANSWER.'
 
     return result
 
