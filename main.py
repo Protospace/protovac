@@ -93,7 +93,7 @@ if wa_api_key:
 def think_send(query):
     result = ''
     try:
-        res = wa_client.query(query, timeout=20)
+        res = wa_client.query(query, timeout=5)
     except BaseException as e:
         logging.error('Error hitting W|A API: {} - {}\n'.format(e.__class__.__name__, e))
         return 'Network error'
@@ -189,7 +189,8 @@ info_line = 0
 logging.info('Starting main loop...')
 
 while True:
-    c = 0
+    if current_screen != 'debug':
+        c = 0
 
     if current_screen == 'home':
         stdscr.addstr(0, 1, ' _______  _______      ___    _________    ___   ____   ____  _        ______ ')
@@ -225,7 +226,26 @@ while True:
         stdscr.addstr(21, 4, '[A]', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(21, 8, 'About')
         stdscr.addstr(22, 1, '')
-        stdscr.addstr(23, 1, '              Copyright (c) 1985 Bikeshed Computer Systems Corp.')
+        stdscr.addstr(23, 1, '          Copyright (c) 1985')
+
+        stars = (9, 34)
+        stdscr.addstr(stars[0]+0 , stars[1], "          .                .  *       - )-    ")
+        stdscr.addstr(stars[0]+1 , stars[1], "       .      *       o       .       *       ")
+        stdscr.addstr(stars[0]+2 , stars[1], "                  |                           ")
+        stdscr.addstr(stars[0]+3 , stars[1], "           .     -O-                          ")
+        stdscr.addstr(stars[0]+4 , stars[1], ".                 |        *      .     -0-   ")
+        stdscr.addstr(stars[0]+5 , stars[1], "       *  o     .    '       *      .        o")
+        stdscr.addstr(stars[0]+6 , stars[1], "              .         .        |      *     ")
+        stdscr.addstr(stars[0]+7 , stars[1], "   *             *              -O-          .")
+        stdscr.addstr(stars[0]+8 , stars[1], "         .             *         |     ,      ")
+        stdscr.addstr(stars[0]+9 , stars[1], "                .           o                 ")
+        stdscr.addstr(stars[0]+10, stars[1], "        .---.                                 ")
+        stdscr.addstr(stars[0]+11, stars[1], "  =   _/__~0_\_     .  *            o       ' ")
+        stdscr.addstr(stars[0]+12, stars[1], " = = (_________)             .                ")
+        stdscr.addstr(stars[0]+13, stars[1], "                 .                        *   ")
+        stdscr.addstr(stars[0]+14, stars[1], "       *               - ) -       *          ")
+
+
         stdscr.clrtoeol()
         stdscr.refresh()
     elif current_screen == 'debug':
