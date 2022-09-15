@@ -26,6 +26,7 @@ except:
 
 KEY_ESCAPE = 27
 KEY_ENTER = 10
+KEY_SPACE = 32
 
 TIMEZONE_CALGARY = pytz.timezone('America/Edmonton')
 
@@ -207,34 +208,26 @@ while True:
         stdscr.addstr(6, 1, '')
         stdscr.addstr(7, 1, '                                         UNIVERSAL COMPUTER')
         stdscr.addstr(8, 1, '')
-        stdscr.addstr(9, 4, '[I]', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(9, 8, 'Info')
-        stdscr.addstr(10, 1, '')
-        stdscr.addstr(11, 4, '[S]', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(11, 8, 'Stats')
-        stdscr.addstr(12, 1, '')
-        stdscr.addstr(13, 4, '[N]', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(13, 8, 'Sign')
-        stdscr.addstr(14, 1, '')
-        stdscr.addstr(15, 4, '[C]', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(15, 8, 'Classes')
-        stdscr.addstr(16, 1, '')
-        stdscr.addstr(17, 4, '[P]', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(17, 8, 'Protocoin')
-        stdscr.addstr(18, 1, '')
+        menupos = 5
+        stdscr.addstr(9, menupos+4, '[I]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(9, menupos+8, 'Info')
+        stdscr.addstr(11, menupos+4, '[S]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(11, menupos+8, 'Stats')
+        stdscr.addstr(13, menupos+4, '[N]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(13, menupos+8, 'Sign')
+        stdscr.addstr(15, menupos+4, '[C]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(15, menupos+8, 'Classes')
+        stdscr.addstr(17, menupos+4, '[P]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(17, menupos+8, 'Protocoin')
         if wa_api_key:
-            stdscr.addstr(19, 4, '[T]', curses.A_REVERSE if highlight_keys else 0)
-            stdscr.addstr(19, 8, 'Think')
-        else:
-            stdscr.addstr(19, 1, '')
-        stdscr.addstr(20, 1, '')
-        stdscr.addstr(21, 4, '[A]', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(21, 8, 'About')
-        stdscr.addstr(22, 1, '')
-        stdscr.addstr(23, 1, '          Copyright (c) 1985')
+            stdscr.addstr(19, menupos+4, '[T]', curses.A_REVERSE if highlight_keys else 0)
+            stdscr.addstr(19, menupos+8, 'Think')
+        stdscr.addstr(21, menupos+4, '[A]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(21, menupos+8, 'About')
+        stdscr.addstr(23, 1, '               Copyright (c) 1985 Bikeshed Computer Systems Ltd.')
 
-        stars = (9, 34)
-        stdscr.addstr(stars[0]+0 , stars[1], "          .                .  *       - )-    ")
+        stars = (8, 34)
+        stdscr.addstr(stars[0]+0 , stars[1], "                           .  *       - )-    ")
         stdscr.addstr(stars[0]+1 , stars[1], "       .      *       o       .       *       ")
         stdscr.addstr(stars[0]+2 , stars[1], "                  |                           ")
         stdscr.addstr(stars[0]+3 , stars[1], "           .     -O-                          ")
@@ -337,6 +330,7 @@ while True:
             stdscr.addstr(num + offset, 1, line)
 
         stdscr.addstr(23, 1, '[B] Back  [J] Down  [K] Up', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(23, 67, 'Page {:>2} / {:>2}'.format((text_line // 19)+1, (len(lines) // 19)+1))
         stdscr.clrtoeol()
         stdscr.refresh()
     elif current_screen == 'info':
@@ -348,6 +342,7 @@ while True:
             stdscr.addstr(num + offset, 1, line)
 
         stdscr.addstr(23, 1, '[B] Back  [J] Down  [K] Up', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(23, 67, 'Page {:>2} / {:>2}'.format((text_line // 19)+1, (len(lines) // 19)+1))
         stdscr.clrtoeol()
         stdscr.refresh()
     elif current_screen == 'protocoin':
@@ -401,7 +396,7 @@ while True:
         if sign_to_send:
             stdscr.addstr(8, 4, sign_to_send)
             stdscr.clrtoeol()
-            stdscr.addstr(23, 1, '[ENTER] Send  [ESC] Cancel')
+            stdscr.addstr(23, 1, '[RETURN] Send  [ESC] Cancel')
         else:
             stdscr.addstr(8, 4, '[E] Edit message', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
@@ -418,7 +413,7 @@ while True:
         if think_to_send:
             stdscr.addstr(7, 4, think_to_send)
             stdscr.clrtoeol()
-            stdscr.addstr(23, 1, '[ENTER] Send  [ESC] Cancel')
+            stdscr.addstr(23, 1, '[RETURN] Send  [ESC] Cancel')
         else:
             stdscr.addstr(7, 4, '[E] Edit prompt', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
@@ -537,7 +532,7 @@ while True:
             current_screen = 'home'
             classes = {}
             classes_start = 0
-        elif button == 'j' or c == curses.KEY_DOWN:
+        elif button == 'j' or c == curses.KEY_DOWN or c == KEY_SPACE:
             classes_start += 1
             stdscr.erase()
         elif button == 'k' or c == curses.KEY_UP:
@@ -551,9 +546,10 @@ while True:
             current_screen = 'home'
             protocoin = {}
             text_line = 0
-        elif button == 'j' or c == curses.KEY_DOWN:
-            text_line += 19
-            stdscr.erase()
+        elif button == 'j' or c == curses.KEY_DOWN or c == KEY_SPACE:
+            if text_line+19 < len(lines):
+                text_line += 19
+                stdscr.erase()
         elif button == 'k' or c == curses.KEY_UP:
             if text_line > 0:
                 text_line -= 19
@@ -565,9 +561,10 @@ while True:
             current_screen = 'home'
             protocoin = {}
             text_line = 0
-        elif button == 'j' or c == curses.KEY_DOWN:
-            text_line += 19
-            stdscr.erase()
+        elif button == 'j' or c == curses.KEY_DOWN or c == KEY_SPACE:
+            if text_line+19 < len(lines):
+                text_line += 19
+                stdscr.erase()
         elif button == 'k' or c == curses.KEY_UP:
             if text_line > 0:
                 text_line -= 19
@@ -579,7 +576,7 @@ while True:
             current_screen = 'home'
             protocoin = {}
             protocoin_line = 0
-        elif button == 'j' or c == curses.KEY_DOWN:
+        elif button == 'j' or c == curses.KEY_DOWN or c == KEY_SPACE:
             protocoin_line += 1
             stdscr.erase()
         elif button == 'k' or c == curses.KEY_UP:
