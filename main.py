@@ -30,6 +30,7 @@ KEY_ENTER = 10
 TIMEZONE_CALGARY = pytz.timezone('America/Edmonton')
 
 location = os.path.dirname(os.path.realpath(__file__))
+
 with open(location + '/info.txt') as f:
     PROTO_INFO = f.read()
 
@@ -39,6 +40,10 @@ for num, line in enumerate(PROTO_INFO.split('\n')):
     except UnicodeEncodeError:
         print('non-ascii found in line:', num+1)
         raise
+
+with open(location + '/lastquestion.txt') as f:
+    LAST_QUESTION = f.read()
+
 
 def format_date(datestr):
     d = datetime.strptime(datestr, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=pytz.UTC)
@@ -184,7 +189,7 @@ classes = {}
 classes_start = 0
 protocoin = {}
 protocoin_line = 0
-info_line = 0
+text_line = 0
 
 logging.info('Starting main loop...')
 
@@ -240,7 +245,7 @@ while True:
         stdscr.addstr(stars[0]+8 , stars[1], "         .             *         |     ,      ")
         stdscr.addstr(stars[0]+9 , stars[1], "                .           o                 ")
         stdscr.addstr(stars[0]+10, stars[1], "        .---.                                 ")
-        stdscr.addstr(stars[0]+11, stars[1], "  =   _/__~0_\_     .  *            o       ' ")
+        stdscr.addstr(stars[0]+11, stars[1], "  =   _/__[0]\_     .  *            o       ' ")
         stdscr.addstr(stars[0]+12, stars[1], " = = (_________)             .                ")
         stdscr.addstr(stars[0]+13, stars[1], "                 .                        *   ")
         stdscr.addstr(stars[0]+14, stars[1], "       *               - ) -       *          ")
@@ -323,12 +328,23 @@ while True:
             classes = fetch_classes()
             stdscr.erase()
             skip_input = True
+    elif current_screen == 'asimov':
+        stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
+        lines = LAST_QUESTION.split('\n')
+
+        offset = 2
+        for num, line in enumerate(lines[text_line:text_line+20]):
+            stdscr.addstr(num + offset, 1, line)
+
+        stdscr.addstr(23, 1, '[B] Back  [J] Down  [K] Up', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.clrtoeol()
+        stdscr.refresh()
     elif current_screen == 'info':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         lines = PROTO_INFO.split('\n')
 
         offset = 2
-        for num, line in enumerate(lines[info_line:info_line+20]):
+        for num, line in enumerate(lines[text_line:text_line+20]):
             stdscr.addstr(num + offset, 1, line)
 
         stdscr.addstr(23, 1, '[B] Back  [J] Down  [K] Up', curses.A_REVERSE if highlight_keys else 0)
@@ -482,6 +498,8 @@ while True:
             current_screen = 'stats'
         elif button == 'i':
             current_screen = 'info'
+        elif button == '0':
+            current_screen = 'asimov'
         elif button == 'n':
             current_screen = 'sign'
         elif button == 'c':
@@ -528,17 +546,31 @@ while True:
                 stdscr.erase()
         else:
             try_highlight()
+    elif current_screen == 'asimov':
+        if button == 'b' or c == KEY_ESCAPE:
+            current_screen = 'home'
+            protocoin = {}
+            text_line = 0
+        elif button == 'j' or c == curses.KEY_DOWN:
+            text_line += 19
+            stdscr.erase()
+        elif button == 'k' or c == curses.KEY_UP:
+            if text_line > 0:
+                text_line -= 19
+                stdscr.erase()
+        else:
+            try_highlight()
     elif current_screen == 'info':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
             protocoin = {}
-            info_line = 0
+            text_line = 0
         elif button == 'j' or c == curses.KEY_DOWN:
-            info_line += 19
+            text_line += 19
             stdscr.erase()
         elif button == 'k' or c == curses.KEY_UP:
-            if info_line > 0:
-                info_line -= 19
+            if text_line > 0:
+                text_line -= 19
                 stdscr.erase()
         else:
             try_highlight()
