@@ -47,6 +47,8 @@ with open(location + '/lastquestion.txt') as f:
 
 
 def format_date(datestr):
+    if not datestr: return 'None'
+
     d = datetime.strptime(datestr, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=pytz.UTC)
     d = d.astimezone(TIMEZONE_CALGARY)
     return d.strftime('%a %b %-d, %Y  %-I:%M %p')
