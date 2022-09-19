@@ -196,6 +196,18 @@ text_line = 0
 
 logging.info('Starting main loop...')
 
+
+last_key = time.time()
+def ratelimit_key():
+    global last_key
+
+    if think_to_send or sign_to_send or time.time() > last_key + 1:
+        last_key = time.time()
+        return False
+    else:
+        return True
+
+
 while True:
     if current_screen != 'debug':
         c = 0
@@ -473,6 +485,8 @@ while True:
     if skip_input:
         skip_input = False
     else:
+        curses.flushinp()
+        if ratelimit_key(): continue
         try:
             c = stdscr.getch()
         except KeyboardInterrupt:
@@ -489,6 +503,7 @@ while True:
         if c and time.time() - highlight_debounce > 0.6:
             highlight_debounce = time.time()
             highlight_keys = True
+            curses.beep()
 
     if current_screen == 'home':
         if button == 's':
