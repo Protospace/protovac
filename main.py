@@ -10,6 +10,8 @@ logging.basicConfig(
 logging.info('')
 logging.info('Boot up')
 
+os.system('stty -ixon')
+
 import curses
 import requests
 import pytz
@@ -101,7 +103,7 @@ if wa_api_key:
 def think_send(query):
     result = ''
     try:
-        res = wa_client.query(query, timeout=5)
+        res = wa_client.query(query, timeout=10)
     except BaseException as e:
         logging.error('Error hitting W|A API: {} - {}\n'.format(e.__class__.__name__, e))
         return 'Network error'
