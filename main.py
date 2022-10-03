@@ -18,6 +18,8 @@ import pytz
 import re
 import os
 import time
+import json
+import textwrap
 from datetime import datetime
 
 try:
@@ -25,6 +27,12 @@ try:
     wa_api_key = secrets.wa_api_key
 except:
     wa_api_key = None
+
+try:
+    import secrets
+    character_ai_token = secrets.character_ai_token
+except:
+    character_ai_token = None
 
 KEY_ESCAPE = 27
 KEY_ENTER = 10
@@ -95,6 +103,62 @@ def fetch_protocoin():
     except BaseException as e:
         logging.exception(e)
         return 'Error'
+
+def message_protovac(message):
+    try:
+        logging.info('Sending to Protovac: %s', message)
+
+        cookies = secrets.character_ai_cookies
+
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0',
+            'Accept': '*/*',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Referer': 'https://beta.character.ai/chat?char=u77cm99PcKBRaczQcJEKLqD99JrT0wxK-RAOKHgFEYo',
+            'Authorization': 'Token ' + character_ai_token,
+            'Origin': 'https://beta.character.ai',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
+        }
+
+        json_data = {
+            'history_external_id': 'Mfdn894zdyDsWvQ3XVZurjW_CPE5SNmEsjPTUNR_nC8',
+            'character_external_id': 'u77cm99PcKBRaczQcJEKLqD99JrT0wxK-RAOKHgFEYo',
+            'text': message,
+            'tgt': 'internal_id:61666:c5e98052-6704-4725-838a-7432ab01fa5b',
+            'ranking_method': 'random',
+            'faux_chat': False,
+            'staging': False,
+            'model_server_address': None,
+            'override_prefix': None,
+            'override_rank': None,
+            'rank_candidates': None,
+            'filter_candidates': None,
+            'enable_tti': None,
+            'initial_timeout': None,
+            'insert_beginning': None,
+            'translate_candidates': None,
+            'stream_every_n_steps': 16,
+            'chunks_to_pad': 1,
+            'is_proactive': False,
+        }
+
+        r = requests.post(
+            'https://beta.character.ai/chat/streaming/',
+            cookies=cookies,
+            headers=headers,
+            json=json_data,
+            timeout=20,
+        )
+        r.raise_for_status()
+        return json.loads(r.text.split('\n')[-2])['replies'][0]['text']
+    except BaseException as e:
+        logging.exception(e)
+        return 'Error'
+
 
 if wa_api_key:
     import wolframalpha
@@ -187,6 +251,8 @@ curses.curs_set(0)
 highlight_keys = False
 highlight_debounce = time.time()
 sign_to_send = ''
+messages = ['']*15
+message_to_send = ''
 think_to_send = ''
 think_result = ''
 stats = {}
@@ -203,7 +269,7 @@ last_key = time.time()
 def ratelimit_key():
     global last_key
 
-    if think_to_send or sign_to_send or time.time() > last_key + 1:
+    if think_to_send or sign_to_send or message_to_send or time.time() > last_key + 1:
         last_key = time.time()
         return False
     else:
@@ -225,16 +291,19 @@ while True:
         stdscr.addstr(7, 1, '                                         UNIVERSAL COMPUTER')
         stdscr.addstr(8, 1, '')
         menupos = 5
-        stdscr.addstr(9, menupos+4, '[I]', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(9, menupos+8, 'Info')
-        stdscr.addstr(11, menupos+4, '[S]', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(11, menupos+8, 'Stats')
-        stdscr.addstr(13, menupos+4, '[N]', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(13, menupos+8, 'Sign')
-        stdscr.addstr(15, menupos+4, '[C]', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(15, menupos+8, 'Classes')
-        stdscr.addstr(17, menupos+4, '[P]', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(17, menupos+8, 'Protocoin')
+        stdscr.addstr(7, menupos+4, '[I]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(7, menupos+8, 'Info')
+        stdscr.addstr(9, menupos+4, '[S]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(9, menupos+8, 'Stats')
+        stdscr.addstr(11, menupos+4, '[N]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(11, menupos+8, 'Sign')
+        stdscr.addstr(13, menupos+4, '[C]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(13, menupos+8, 'Classes')
+        stdscr.addstr(15, menupos+4, '[P]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(15, menupos+8, 'Protocoin')
+        if character_ai_token:
+            stdscr.addstr(17, menupos+4, '[M]', curses.A_REVERSE if highlight_keys else 0)
+            stdscr.addstr(17, menupos+8, 'Message')
         if wa_api_key:
             stdscr.addstr(19, menupos+4, '[T]', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(19, menupos+8, 'Think')
@@ -419,6 +488,26 @@ while True:
 
         stdscr.clrtoeol()
         stdscr.refresh()
+    elif current_screen == 'message':
+        stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
+        stdscr.addstr(2, 1, 'Message Protovac')
+        stdscr.addstr(3, 1, '===============')
+        stdscr.addstr(5, 1, 'Send a message to Protovac, the universal computer.')
+
+        offset = 7
+        for num, line in enumerate(messages[-13:]):
+            stdscr.addstr(num + offset, 1, line)
+
+        if message_to_send:
+            stdscr.addstr(21, 21, message_to_send)
+            stdscr.clrtoeol()
+            stdscr.addstr(23, 1, '[RETURN] Send  [ESC] Cancel')
+        else:
+            stdscr.addstr(21, 21, '[E] Edit message', curses.A_REVERSE if highlight_keys else 0)
+            stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
+
+        stdscr.clrtoeol()
+        stdscr.refresh()
     elif current_screen == 'think':
         stdscr.erase()
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
@@ -518,6 +607,9 @@ while True:
             current_screen = 'sign'
         elif button == 'c':
             current_screen = 'classes'
+        elif button == 'm':
+            current_screen = 'message'
+            messages = ['']*15
         elif button == 't' and wa_api_key:
             current_screen = 'think'
         elif button == 'd':
@@ -625,6 +717,48 @@ while True:
             current_screen = 'home'
         elif button == 'e':
             sign_to_send = '_'
+        else:
+            try_highlight()
+    elif current_screen == 'message':
+        if message_to_send:
+            if c == curses.KEY_BACKSPACE:
+                message_to_send = message_to_send[:-2] + '_'
+            elif c == KEY_ESCAPE:
+                message_to_send = ''
+                stdscr.erase()
+            elif c == KEY_ENTER:
+                if len(message_to_send) > 1:
+                    stdscr.addstr(22, 21, 'Sending...')
+                    stdscr.refresh()
+                    message_to_send = message_to_send[:-1]
+
+                    lines = textwrap.wrap(
+                        message_to_send,
+                        width=80,
+                        initial_indent=' '*20,
+                        subsequent_indent=' '*20,
+                    )
+                    messages.append('')
+                    messages.extend(lines)
+
+                    reply = message_protovac(message_to_send)
+
+                    lines = textwrap.wrap(
+                        reply,
+                        width=60,
+                    )
+                    messages.append('')
+                    messages.extend(lines)
+
+                    stdscr.erase()
+                    message_to_send = ''
+            else:
+                if c < 127 and c > 31:
+                    message_to_send = message_to_send[:-1] + chr(c) + '_'
+        elif button == 'b' or c == KEY_ESCAPE:
+            current_screen = 'home'
+        elif button == 'e':
+            message_to_send = '_'
         else:
             try_highlight()
     elif current_screen == 'think':
