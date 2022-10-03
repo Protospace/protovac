@@ -151,7 +151,7 @@ def message_protovac(message):
             cookies=cookies,
             headers=headers,
             json=json_data,
-            timeout=20,
+            timeout=30,
         )
         r.raise_for_status()
         return json.loads(r.text.split('\n')[-2])['replies'][0]['text']
@@ -159,6 +159,14 @@ def message_protovac(message):
         logging.exception(e)
         return 'Error'
 
+def print_messages(messages):
+    try:
+        with open('/dev/usb/lp0', 'w') as f:
+            for m in messages:
+                f.write('  ' + m + '\n')
+            f.write('\n')
+    except BaseException as e:
+        logging.exception(e)
 
 if wa_api_key:
     import wolframalpha
@@ -738,6 +746,7 @@ while True:
                         initial_indent=' '*20,
                         subsequent_indent=' '*20,
                     )
+                    print_messages(lines)
                     messages.append('')
                     messages.extend(lines)
 
@@ -747,6 +756,7 @@ while True:
                         reply,
                         width=60,
                     )
+                    print_messages(lines)
                     messages.append('')
                     messages.extend(lines)
 
