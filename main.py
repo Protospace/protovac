@@ -106,7 +106,7 @@ def fetch_protocoin():
 
 def message_protovac(message):
     try:
-        logging.info('Sending to Protovac: %s', message)
+        logging.info('Message to Protovac: %s', message)
 
         cookies = secrets.character_ai_cookies
 
@@ -154,7 +154,11 @@ def message_protovac(message):
             timeout=30,
         )
         r.raise_for_status()
-        return json.loads(r.text.split('\n')[-2])['replies'][0]['text']
+        reply = json.loads(r.text.split('\n')[-2])['replies'][0]['text'].replace('\n\n', ' ')
+
+        logging.info('Message reply: %s', reply)
+
+        return reply
     except BaseException as e:
         logging.exception(e)
         return 'Error'
@@ -312,6 +316,7 @@ while True:
         if character_ai_token:
             stdscr.addstr(17, menupos+4, '[M]', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(17, menupos+8, 'Message')
+            stdscr.addstr(17, 4, 'NEW')
         if wa_api_key:
             stdscr.addstr(19, menupos+4, '[T]', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(19, menupos+8, 'Think')
@@ -761,7 +766,7 @@ while True:
                     messages.extend(lines)
 
                     stdscr.erase()
-                    message_to_send = ''
+                    message_to_send = '_'
             else:
                 if c < 127 and c > 31:
                     message_to_send = message_to_send[:-1] + chr(c) + '_'
