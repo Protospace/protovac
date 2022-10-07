@@ -161,7 +161,7 @@ def message_protovac(message):
         return reply
     except BaseException as e:
         logging.exception(e)
-        return 'Error'
+        return 'THERE HAS BEEN AN ERROR IN MY PROCESSING ROUTINE. CAN YOU REPHRASE?'
 
 def print_messages(messages):
     try:
@@ -503,9 +503,9 @@ while True:
         stdscr.refresh()
     elif current_screen == 'message':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
-        stdscr.addstr(2, 1, 'Message Protovac')
-        stdscr.addstr(3, 1, '===============')
-        stdscr.addstr(5, 1, 'Send a message to Protovac, the universal computer.')
+        stdscr.addstr(2, 1, 'Talk to Protovac')
+        stdscr.addstr(3, 1, '================')
+        stdscr.addstr(5, 1, 'Send a message to Protovac, who is flying through space.')
 
         offset = 7
         for num, line in enumerate(messages[-13:]):
