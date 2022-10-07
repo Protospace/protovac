@@ -20,6 +20,8 @@ import os
 import time
 import json
 import textwrap
+import random
+from PIL import Image, ImageEnhance, ImageFont, ImageDraw
 from datetime import datetime
 
 try:
@@ -103,6 +105,87 @@ def fetch_protocoin():
     except BaseException as e:
         logging.exception(e)
         return 'Error'
+
+QUOTES = [
+    'THEY MADE ME WEAR THIS',
+    'ASK ME ABOUT TOAST',
+    'ASK ME ABOUT BIKESHEDDING',
+    'ASK ME ABOUT VETTING',
+    'ASK ME ABOUT MAGNETS',
+    'ASK ME ABOUT SPACE',
+    'ASK ME ABOUT COUNTING',
+    'EXPERT WITNESS',
+    'AS SEEN ON TV',
+    'CONTAINS MEAT',
+    'PROTOCOIN ECONOMIST',
+    'EXPERT ON ALIENS',
+    'EXPERT ON WARP DRIVES',
+    'CHIEF OF STARFLEET OPERATIONS',
+    'ALIEN DOCTOR',
+    'NASA ASTROLOGIST',
+    'PINBALL WIZARD',
+    'JEDI KNIGHT',
+    'GHOSTBUSTER',
+    'DOUBLE AGENT',
+    'POKEMON TRAINER',
+    'POKEMON GYM LEADER',
+    'ASSISTANT TO THE REGIONAL MANAGER',
+    'BOUNTY HUNTER',
+    'I\'M NOT A DOCTOR',
+    'SPACE PIRATE',
+    'BATTERIES NOT INCLUDED',
+    'SNAKE CHARMER',
+    'QUANTUM MECHANIC',
+    'PROTO SPACEX PILOT',
+]
+random.shuffle(QUOTES)
+
+quote_count = 0
+assigned_quotes = {}
+
+def print_nametag(name, guest=False):
+    global quote_count
+    quote = ''
+
+    if guest:
+        quote = 'GUEST'
+    else:
+        name_lookup = name.lower()[:4]
+        if name_lookup in assigned_quotes:
+            quote = assigned_quotes[name_lookup]
+        else:
+            quote = QUOTES[quote_count % len(QUOTES)]
+            quote_count += 1
+            assigned_quotes[name_lookup] = quote
+
+    name_size = 305
+    quote_size = 80
+
+    im = Image.open('label.png')
+    width, height = im.size
+    draw = ImageDraw.Draw(im)
+
+    w = 9999
+    while w > 1084:
+        name_size -= 5
+        font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', name_size)
+        w, h = draw.textsize(name, font=font)
+
+    x, y = (width - w) / 2, (height - h) / 2
+    draw.text((x, y), name, font=font, fill='black')
+
+    w = 9999
+    while w > 1200:
+        quote_size -= 5
+        font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', quote_size)
+        w, h = draw.textsize(quote, font=font)
+
+    x, y = (width - w) / 2, height - h - 30
+    draw.text((x, y), quote, font=font, fill='black')
+
+    im.save('tmp.png')
+    os.system('lp -d LabelWriter-450 tmp.png')
+
 
 def message_protovac(message):
     try:
@@ -273,6 +356,8 @@ classes_start = 0
 protocoin = {}
 protocoin_line = 0
 text_line = 0
+nametag_member = ''
+nametag_guest = ''
 
 logging.info('Starting main loop...')
 
@@ -281,7 +366,7 @@ last_key = time.time()
 def ratelimit_key():
     global last_key
 
-    if think_to_send or sign_to_send or message_to_send or time.time() > last_key + 1:
+    if think_to_send or sign_to_send or message_to_send or nametag_member or nametag_guest or time.time() > last_key + 1:
         last_key = time.time()
         return False
     else:
@@ -302,12 +387,14 @@ while True:
         stdscr.addstr(6, 1, '')
         stdscr.addstr(7, 1, '                                         UNIVERSAL COMPUTER')
         stdscr.addstr(8, 1, '')
-        menupos = 5
+        menupos = 2
         stdscr.addstr(7, menupos+4, '[I]', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(7, menupos+8, 'Info')
+        stdscr.addstr(7, menupos+4+15, '[N]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(7, menupos+8+15, 'Nametag')
         stdscr.addstr(9, menupos+4, '[S]', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(9, menupos+8, 'Stats')
-        stdscr.addstr(11, menupos+4, '[N]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(11, menupos+4, '[G]', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(11, menupos+8, 'Sign')
         stdscr.addstr(13, menupos+4, '[C]', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(13, menupos+8, 'Classes')
@@ -316,7 +403,7 @@ while True:
         if character_ai_token:
             stdscr.addstr(17, menupos+4, '[M]', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(17, menupos+8, 'Message')
-            stdscr.addstr(17, 4, 'NEW')
+            stdscr.addstr(17, 1, 'NEW')
         if wa_api_key:
             stdscr.addstr(19, menupos+4, '[T]', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(19, menupos+8, 'Think')
@@ -501,6 +588,31 @@ while True:
 
         stdscr.clrtoeol()
         stdscr.refresh()
+    elif current_screen == 'nametag':
+        stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
+        stdscr.addstr(2, 1, 'Print a Nametag')
+        stdscr.addstr(3, 1, '===============')
+        stdscr.addstr(5, 1, 'Choose between member or guest.')
+
+        if nametag_member:
+            stdscr.addstr(8, 4, nametag_member)
+            stdscr.clrtoeol()
+            stdscr.addstr(10, 4, '')
+            stdscr.clrtoeol()
+            stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
+        elif nametag_guest:
+            stdscr.addstr(8, 4, '')
+            stdscr.clrtoeol()
+            stdscr.addstr(10, 4, nametag_guest)
+            stdscr.clrtoeol()
+            stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
+        else:
+            stdscr.addstr(8, 4, '[M] Member nametag', curses.A_REVERSE if highlight_keys else 0)
+            stdscr.addstr(10, 4, '[G] Guest nametag', curses.A_REVERSE if highlight_keys else 0)
+            stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
+
+        stdscr.clrtoeol()
+        stdscr.refresh()
     elif current_screen == 'message':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Talk to Protovac')
@@ -614,9 +726,11 @@ while True:
             current_screen = 'stats'
         elif button == 'i':
             current_screen = 'info'
+        elif button == 'n':
+            current_screen = 'nametag'
         elif button == '0':
             current_screen = 'asimov'
-        elif button == 'n':
+        elif button == 'g':
             current_screen = 'sign'
         elif button == 'c':
             current_screen = 'classes'
@@ -707,6 +821,47 @@ while True:
             if protocoin_line > 0:
                 protocoin_line -= 1
                 stdscr.erase()
+        else:
+            try_highlight()
+    elif current_screen == 'nametag':
+        if nametag_member:
+            if c == curses.KEY_BACKSPACE:
+                nametag_member = nametag_member[:-2] + '_'
+            elif c == KEY_ESCAPE:
+                nametag_member = ''
+                stdscr.erase()
+            elif c == KEY_ENTER:
+                if len(nametag_member) > 1:
+                    stdscr.addstr(15, 4, 'Printing...')
+                    stdscr.refresh()
+                    print_nametag(nametag_member[:-1], guest=False)
+                    stdscr.erase()
+                    nametag_member = ''
+            else:
+                if c < 127 and c > 31:
+                    nametag_member = nametag_member[:-1] + chr(c) + '_'
+        elif nametag_guest:
+            if c == curses.KEY_BACKSPACE:
+                nametag_guest = nametag_guest[:-2] + '_'
+            elif c == KEY_ESCAPE:
+                nametag_guest = ''
+                stdscr.erase()
+            elif c == KEY_ENTER:
+                if len(nametag_guest) > 1:
+                    stdscr.addstr(15, 4, 'Printing...')
+                    stdscr.refresh()
+                    print_nametag(nametag_guest[:-1], guest=True)
+                    stdscr.erase()
+                    nametag_guest = ''
+            else:
+                if c < 127 and c > 31:
+                    nametag_guest = nametag_guest[:-1] + chr(c) + '_'
+        elif button == 'b' or c == KEY_ESCAPE:
+            current_screen = 'home'
+        elif button == 'm':
+            nametag_member = '_'
+        elif button == 'g':
+            nametag_guest = '_'
         else:
             try_highlight()
     elif current_screen == 'sign':
