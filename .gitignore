@@ -114,3 +114,4 @@ venv.bak/
 .mypy_cache/
 
 secrets.py
+tmp.png
