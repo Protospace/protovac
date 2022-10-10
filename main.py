@@ -176,8 +176,10 @@ def print_nametag(name, guest=False):
     quote = ''
 
     if guest:
+        quote_size = 120
         quote = 'GUEST'
     else:
+        quote_size = 80
         name_lookup = name.lower()[:4]
         if name_lookup in assigned_quotes:
             quote = assigned_quotes[name_lookup]
@@ -187,7 +189,6 @@ def print_nametag(name, guest=False):
             assigned_quotes[name_lookup] = quote
 
     name_size = 305
-    quote_size = 80
 
     im = Image.open('label.png')
     width, height = im.size
@@ -199,7 +200,7 @@ def print_nametag(name, guest=False):
         font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', name_size)
         w, h = draw.textsize(name, font=font)
 
-    x, y = (width - w) / 2, (height - h) / 2
+    x, y = (width - w) / 2, ((height - h) / 2) - 20
     draw.text((x, y), name, font=font, fill='black')
 
     w = 9999
@@ -212,7 +213,7 @@ def print_nametag(name, guest=False):
     draw.text((x, y), quote, font=font, fill='black')
 
     im.save('tmp.png')
-    os.system('lp -d LabelWriter-450 tmp.png')
+    os.system('lp -d LabelWriter-450 tmp.png 2> /dev/null')
 
 
 def message_protovac(message):
