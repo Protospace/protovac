@@ -7,6 +7,9 @@ logging.basicConfig(
     format='[%(asctime)s] %(levelname)s %(module)s/%(funcName)s - %(message)s',
     level=logging.DEBUG if DEBUG else logging.INFO)
 
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 logging.info('')
 logging.info('Boot up')
 
@@ -190,7 +193,7 @@ def print_nametag(name, guest=False):
 
     name_size = 305
 
-    im = Image.open('label.png')
+    im = Image.open(location + '/label.png')
     width, height = im.size
     draw = ImageDraw.Draw(im)
 
@@ -213,7 +216,7 @@ def print_nametag(name, guest=False):
     draw.text((x, y), quote, font=font, fill='black')
 
     im.save('tmp.png')
-    os.system('lp -d LabelWriter-450 tmp.png 2> /dev/null')
+    os.system('lp -d dymo tmp.png 2> /dev/null')
 
 
 def message_protovac(message):
