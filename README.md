@@ -170,7 +170,22 @@ Examples:
 [B] Back
 ```
 
-## Setup
+## Development Setup
+
+For developing on your own Ubuntu / Debian machine:
+
+```
+$ git clone https://github.com/Protospace/protovac.git
+$ cd protovac/
+$ sudo apt update
+$ sudo apt install python3 python3-dev python3-pip python3-virtualenv
+$ virtualenv -p python3 env
+$ source env/bin/activate
+(env) $ pip install -r requirements.txt
+(env) $ python main.py
+```
+
+## Rasberry Pi Setup
 
 ### SD Card
 
@@ -213,45 +228,55 @@ Edit `var/spool/cron/crontabs/pi` (optional):
 */5 * * * *  # example command that runs every 5 minutes
 ```
 
-### On the Raspberry Pi
+### On Raspberry Pi
 
-SSH into the Raspberry Pi.
-
-Change the hostname:
+SSH into the Raspberry Pi for setup:
 
 ```
-sudo hostnamectl set-hostname protovac
+$ sudo apt update
+$ sudo apt install python3 python3-dev python3-pip python3-virtualenv vim byobu
+$ sudo hostnamectl set-hostname protovac
 ```
 
-Replace "raspberry" with "protovac" in `/etc/hosts`.
+Replace "raspberrypi" with "protovac" in `/etc/hosts`.
+
+Create "protovac" user:
+
+```
+$ sudo adduser protovac
+$ sudo usermod -aG dialout protovac
+$ sudo usermod -aG lp protovac
+$ sudo usermod -aG gpio protovac
+```
 
 Edit `/lib/systemd/system/serial-getty@.service`:
 
 ```
-ExecStart=-/sbin/agetty --autologin protospace 9600 %I mt70
+ExecStart=-/sbin/agetty --autologin protovac 9600 %I mt70
 ```
 
 Edit `/etc/passwd`:
 
 ```
-protospace:x:1001:1001:,,,:/home/protospace:/home/tanner/protovac/main.py
+protovac:x:1001:1001:,,,:/home/protovac:/home/pi/protovac/main.py
 ```
 
 ```
+$ cd
 $ git clone https://github.com/Protospace/protovac.git
-$ cd protovac
+$ cd protovac/
 $ sudo tic -o /lib/terminfo/ mt70
-$ sudo apt update
-$ sudo apt install python3 python3-dev python3-pip python3-virtualenv
 $ virtualenv -p python3 env
 $ source env/bin/activate
 (env) $ pip install -r requirements.txt
 (env) $ python main.py
+
+# Make sure it loads, then press D, then X to exit
 ```
 
-Restart:
+Restart getty:
 
 ```
-sudo systemctl daemon-reload
-sudo systemctl restart serial-getty@ttyS0.service
+$ sudo systemctl daemon-reload
+$ sudo systemctl restart serial-getty@ttyS0.service
 ```
