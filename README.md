@@ -172,23 +172,58 @@ Examples:
 
 ## Setup
 
+### SD Card
+
+Format SD card, mount on your own system.
+
 ```
-$ git clone https://github.com/Protospace/protovac.git
-$ cd protovac
-$ sudo tic -o /lib/terminfo/ mt70
-$ sudo apt update
-$ sudo apt install python3 python3-dev python3-pip python3-virtualenv
-$ virtualenv -p python3 env
-$ source env/bin/activate
-(env) $ pip install -r requirements.txt
-(env) $ python main.py
+$ cd boot/  # on SD card
+$ touch ssh
+$ touch wpa_supplicant.conf
 ```
 
-Append to `/boot/config.txt`:
+Edit `wpa_supplicant.conf`:
+
+```
+country=CA
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+network={
+    ssid="YOUR_NETWORK_NAME"
+    psk="YOUR_PASSWORD"
+    key_mgmt=WPA-PSK
+}
+```
+
+Append to `config.txt`:
 
 ```
 enable_uart=1
 ```
+
+Optionally set up a cronjob:
+
+```
+$ cd rootfs/  # on SD card
+$ sudo touch var/spool/cron/crontabs/pi
+```
+
+Edit `var/spool/cron/crontabs/pi` (optional):
+
+```
+*/5 * * * *  # example command that runs every 5 minutes
+```
+
+### On the Raspberry Pi
+
+SSH into the Raspberry Pi.
+
+Change the hostname:
+
+```
+sudo hostnamectl set-hostname protovac
+```
+
+Replace "raspberry" with "protovac" in `/etc/hosts`.
 
 Edit `/lib/systemd/system/serial-getty@.service`:
 
@@ -200,6 +235,18 @@ Edit `/etc/passwd`:
 
 ```
 protospace:x:1001:1001:,,,:/home/protospace:/home/tanner/protovac/main.py
+```
+
+```
+$ git clone https://github.com/Protospace/protovac.git
+$ cd protovac
+$ sudo tic -o /lib/terminfo/ mt70
+$ sudo apt update
+$ sudo apt install python3 python3-dev python3-pip python3-virtualenv
+$ virtualenv -p python3 env
+$ source env/bin/activate
+(env) $ pip install -r requirements.txt
+(env) $ python main.py
 ```
 
 Restart:
