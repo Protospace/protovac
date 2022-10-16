@@ -184,8 +184,27 @@ $ source env/bin/activate
 (env) $ python main.py
 ```
 
+Append to `/boot/config.txt`:
 
+```
+enable_uart=1
+```
+
+Edit `/lib/systemd/system/serial-getty@.service`:
+
+```
 ExecStart=-/sbin/agetty --autologin protospace 9600 %I mt70
+```
+
+Edit `/etc/passwd`:
+
+```
+protospace:x:1001:1001:,,,:/home/protospace:/home/tanner/protovac/main.py
+```
+
+Restart:
+
+```
 sudo systemctl daemon-reload
 sudo systemctl restart serial-getty@ttyS0.service
-
+```
