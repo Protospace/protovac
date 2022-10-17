@@ -181,7 +181,7 @@ def print_nametag(name, guest=False):
     if guest:
         quote_size = 120
         quote = 'GUEST'
-        logging.info('Printing GUEST nametag for: %s', name)
+        logging.info('Printing guest nametag for: %s', name)
     else:
         quote_size = 80
         name_lookup = name.lower()[:4]
@@ -191,7 +191,7 @@ def print_nametag(name, guest=False):
             quote = QUOTES[quote_count % len(QUOTES)]
             quote_count += 1
             assigned_quotes[name_lookup] = quote
-        logging.info('Printing MEMBER nametag for: %s, quote: %s', name, quote)
+        logging.info('Printing member nametag for: %s, quote: %s', name, quote)
 
     name_size = 305
 
@@ -216,6 +216,40 @@ def print_nametag(name, guest=False):
 
     x, y = (width - w) / 2, height - h - 30
     draw.text((x, y), quote, font=font, fill='black')
+
+    im.save('tmp.png')
+    os.system('lp -d dymo tmp.png > /dev/null 2>&1')
+
+
+def print_tool_label(wiki_num):
+    im = Image.open('blank.png')
+    w1, h1 = im.size
+
+    logging.info('Printing tool label for ID: %s', wiki_num)
+
+    draw = ImageDraw.Draw(im)
+
+    params = {'id': str(wiki_num), 'size': '4'}
+    res = requests.get('https://labels.protospace.ca/', stream=True, params=params, timeout=5)
+    res.raise_for_status()
+
+    label = Image.open(res.raw)
+    pixel_data = label.load()
+
+    # remove yellow background
+    for y in range(label.size[1]):
+        for x in range(label.size[0]):
+            r = min(pixel_data[x, y][0] + 4, 255)
+            pixel_data[x, y] = (r, r, r, 255)
+
+    new_size = (1280, 640)
+    label = label.resize(new_size, Image.ANTIALIAS)
+
+    w2, h2 = label.size
+
+    x, y = int((w1 - w2) / 2), int((h1 - h2) / 2)
+
+    im.paste(label, (x, y))
 
     im.save('tmp.png')
     os.system('lp -d dymo tmp.png > /dev/null 2>&1')
@@ -392,6 +426,7 @@ protocoin_line = 0
 text_line = 0
 nametag_member = ''
 nametag_guest = ''
+label_tool = ''
 
 logging.info('Starting main loop...')
 
@@ -400,7 +435,7 @@ last_key = time.time()
 def ratelimit_key():
     global last_key
 
-    if think_to_send or sign_to_send or message_to_send or nametag_member or nametag_guest or time.time() > last_key + 1:
+    if think_to_send or sign_to_send or message_to_send or nametag_member or nametag_guest or label_tool or time.time() > last_key + 1:
         last_key = time.time()
         return False
     else:
@@ -428,6 +463,8 @@ while True:
         stdscr.addstr(7, menupos+8+15, 'Nametag')
         stdscr.addstr(9, menupos+4, '[S]', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(9, menupos+8, 'Stats')
+        stdscr.addstr(9, menupos+4+15, '[L]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(9, menupos+8+15, 'Label')
         stdscr.addstr(11, menupos+4, '[G]', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(11, menupos+8, 'Sign')
         stdscr.addstr(13, menupos+4, '[C]', curses.A_REVERSE if highlight_keys else 0)
@@ -465,6 +502,7 @@ while True:
 
         stdscr.clrtoeol()
         stdscr.refresh()
+
     elif current_screen == 'debug':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Debug Mode')
@@ -475,6 +513,7 @@ while True:
         stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
         stdscr.clrtoeol()
         stdscr.refresh()
+
     elif current_screen == 'stats':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Protospace Stats')
@@ -506,6 +545,7 @@ while True:
             stats = fetch_stats()
             stdscr.erase()
             skip_input = True
+
     elif current_screen == 'classes':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Protospace Classes')
@@ -542,6 +582,7 @@ while True:
             classes = fetch_classes()
             stdscr.erase()
             skip_input = True
+
     elif current_screen == 'asimov':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         lines = LAST_QUESTION.split('\n')
@@ -554,6 +595,7 @@ while True:
         stdscr.addstr(23, 67, 'Page {:>2} / {:>2}'.format((text_line // 19)+1, (len(lines) // 19)+1))
         stdscr.clrtoeol()
         stdscr.refresh()
+
     elif current_screen == 'info':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         lines = PROTO_INFO.split('\n')
@@ -566,6 +608,7 @@ while True:
         stdscr.addstr(23, 67, 'Page {:>2} / {:>2}'.format((text_line // 19)+1, (len(lines) // 19)+1))
         stdscr.clrtoeol()
         stdscr.refresh()
+
     elif current_screen == 'protocoin':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Protocoin')
@@ -607,6 +650,7 @@ while True:
             protocoin = fetch_protocoin()
             stdscr.erase()
             skip_input = True
+
     elif current_screen == 'sign':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Protospace Sign')
@@ -624,6 +668,7 @@ while True:
 
         stdscr.clrtoeol()
         stdscr.refresh()
+
     elif current_screen == 'nametag':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Print a Nametag')
@@ -649,6 +694,33 @@ while True:
 
         stdscr.clrtoeol()
         stdscr.refresh()
+
+    elif current_screen == 'label':
+        stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
+        stdscr.addstr(2, 1, 'Print a Label')
+        stdscr.addstr(3, 1, '===============')
+        #stdscr.addstr(5, 1, 'Choose between member or guest.')
+
+        if label_tool:
+            stdscr.addstr(8, 4, 'Enter Wiki-ID tool number: ' + label_tool)
+            stdscr.clrtoeol()
+            stdscr.addstr(10, 4, '')
+            stdscr.clrtoeol()
+            stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
+        #elif nametag_guest:
+        #    stdscr.addstr(8, 4, '')
+        #    stdscr.clrtoeol()
+        #    stdscr.addstr(10, 4, nametag_guest)
+        #    stdscr.clrtoeol()
+        #    stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
+        else:
+            stdscr.addstr(8, 4, '[T] Tool label', curses.A_REVERSE if highlight_keys else 0)
+            #stdscr.addstr(10, 4, '[G] Guest nametag', curses.A_REVERSE if highlight_keys else 0)
+            stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
+
+        stdscr.clrtoeol()
+        stdscr.refresh()
+
     elif current_screen == 'message':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Talk to Protovac')
@@ -669,6 +741,7 @@ while True:
 
         stdscr.clrtoeol()
         stdscr.refresh()
+
     elif current_screen == 'think':
         stdscr.erase()
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
@@ -708,6 +781,7 @@ while True:
             stdscr.addstr(18, 4, 'how long did the Aztec empire last?')
 
         stdscr.refresh()
+
     elif current_screen == 'about':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'About')
@@ -764,6 +838,8 @@ while True:
             current_screen = 'info'
         elif button == 'n':
             current_screen = 'nametag'
+        elif button == 'l':
+            current_screen = 'label'
         elif button == '0':
             current_screen = 'asimov'
         elif button == 'g':
@@ -915,6 +991,55 @@ while True:
             nametag_member = '_'
         elif button == 'g':
             nametag_guest = '_'
+        else:
+            try_highlight()
+
+    elif current_screen == 'label':
+        if label_tool:
+            if c == curses.KEY_BACKSPACE:
+                label_tool = label_tool[:-2] + '_'
+            elif c == KEY_ESCAPE:
+                label_tool = ''
+                stdscr.erase()
+            elif c == KEY_ENTER:
+                if len(label_tool) > 1:
+                    stdscr.addstr(15, 4, 'Printing...')
+                    stdscr.refresh()
+                    try:
+                        print_tool_label(label_tool[:-1])
+                    except BaseException as e:
+                        logging.exception(e)
+                        stdscr.addstr(15, 4, 'Error.')
+                        stdscr.clrtoeol()
+                        stdscr.refresh()
+                        time.sleep(2)
+                    stdscr.erase()
+                    label_tool = ''
+            else:
+                if c <= 57 and c >= 48:
+                    label_tool = label_tool[:-1] + chr(c) + '_'
+        #elif nametag_guest:
+        #    if c == curses.KEY_BACKSPACE:
+        #        nametag_guest = nametag_guest[:-2] + '_'
+        #    elif c == KEY_ESCAPE:
+        #        nametag_guest = ''
+        #        stdscr.erase()
+        #    elif c == KEY_ENTER:
+        #        if len(nametag_guest) > 1:
+        #            stdscr.addstr(15, 4, 'Printing...')
+        #            stdscr.refresh()
+        #            print_nametag(nametag_guest[:-1], guest=True)
+        #            stdscr.erase()
+        #            nametag_guest = ''
+        #    else:
+        #        if c < 127 and c > 31:
+        #            nametag_guest = nametag_guest[:-1] + chr(c) + '_'
+        elif button == 'b' or c == KEY_ESCAPE:
+            current_screen = 'home'
+        elif button == 't':
+            label_tool = '_'
+        #elif button == 'g':
+        #    nametag_guest = '_'
         else:
             try_highlight()
 
