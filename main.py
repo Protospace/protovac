@@ -25,7 +25,7 @@ import json
 import textwrap
 import random
 from PIL import Image, ImageEnhance, ImageFont, ImageDraw
-from datetime import datetime
+from datetime import datetime, timezone
 
 try:
     import secrets
@@ -94,7 +94,7 @@ def fetch_classes():
         logging.info('Fetching classes...')
         r = requests.get('https://api.my.protospace.ca/sessions/', timeout=5)
         r.raise_for_status()
-        return r.json()
+        return r.json()['results']
     except BaseException as e:
         logging.exception(e)
         return 'Error'
@@ -511,11 +511,13 @@ while True:
         if classes == 'Error':
             stdscr.addstr(5, 1, 'Error. Go back and try again.')
         elif classes:
-            classes_in_view = classes['results'][classes_start:6+classes_start]
+            classes_sorted = sorted(classes, key=lambda x: x['datetime'])
+            classes_in_view = classes_sorted[classes_start:6+classes_start]
             lines = []
 
             for session in classes_in_view:
-                lines.append(session['course_data']['name'])
+                past = datetime.now(tz=timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ') > session['datetime']
+                lines.append(('[PAST] ' if past else '') + session['course_data']['name'])
                 lines.append('{:<30}  {:<12}  {:<7}  {:<7}'.format(
                     format_date(session['datetime']),
                     'Protospace' if session['course_data']['id'] in [413, 317, 273] else session['instructor_name'],
@@ -779,6 +781,7 @@ while True:
             current_screen = 'protocoin'
         else:
             try_highlight()
+
     elif current_screen == 'debug':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
@@ -786,31 +789,36 @@ while True:
             break
         else:
             try_highlight()
+
     elif current_screen == 'stats':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
             stats = {}
         else:
             try_highlight()
+
     elif current_screen == 'about':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
         else:
             try_highlight()
+
     elif current_screen == 'classes':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
             classes = {}
             classes_start = 0
         elif button == 'j' or c == curses.KEY_DOWN or c == KEY_SPACE:
-            classes_start += 1
-            stdscr.erase()
+            if classes_start+6 < len(classes):
+                classes_start += 6
+                stdscr.erase()
         elif button == 'k' or c == curses.KEY_UP:
             if classes_start > 0:
-                classes_start -= 1
+                classes_start -= 6
                 stdscr.erase()
         else:
             try_highlight()
+
     elif current_screen == 'asimov':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
@@ -826,6 +834,7 @@ while True:
                 stdscr.erase()
         else:
             try_highlight()
+
     elif current_screen == 'info':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
@@ -841,6 +850,7 @@ while True:
                 stdscr.erase()
         else:
             try_highlight()
+
     elif current_screen == 'protocoin':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
@@ -855,6 +865,7 @@ while True:
                 stdscr.erase()
         else:
             try_highlight()
+
     elif current_screen == 'nametag':
         if nametag_member:
             if c == curses.KEY_BACKSPACE:
@@ -896,6 +907,7 @@ while True:
             nametag_guest = '_'
         else:
             try_highlight()
+
     elif current_screen == 'sign':
         if sign_to_send:
             if c == curses.KEY_BACKSPACE:
@@ -919,6 +931,7 @@ while True:
             sign_to_send = '_'
         else:
             try_highlight()
+
     elif current_screen == 'message':
         if message_to_send:
             if c == curses.KEY_BACKSPACE:
@@ -963,6 +976,7 @@ while True:
             message_to_send = '_'
         else:
             try_highlight()
+
     elif current_screen == 'think':
         if think_to_send:
             if c == curses.KEY_BACKSPACE:
