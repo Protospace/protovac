@@ -222,7 +222,7 @@ def print_nametag(name, guest=False):
 
 
 def print_tool_label(wiki_num):
-    im = Image.open('blank.png')
+    im = Image.open(location + '/blank.png')
     w1, h1 = im.size
 
     logging.info('Printing tool label for ID: %s', wiki_num)
