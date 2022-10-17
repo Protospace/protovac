@@ -1,4 +1,4 @@
-#!/home/tanner/protovac/env/bin/python
+#!/home/pi/protovac/env/bin/python
 
 import os, logging
 DEBUG = os.environ.get('DEBUG')

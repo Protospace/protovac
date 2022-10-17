@@ -175,10 +175,10 @@ Examples:
 For developing on your own Ubuntu / Debian machine:
 
 ```
+$ sudo apt update
+$ sudo apt install python3 python3-dev python3-pip python3-virtualenv libopenjp2-7 git
 $ git clone https://github.com/Protospace/protovac.git
 $ cd protovac/
-$ sudo apt update
-$ sudo apt install python3 python3-dev python3-pip python3-virtualenv
 $ virtualenv -p python3 env
 $ source env/bin/activate
 (env) $ pip install -r requirements.txt
@@ -234,7 +234,7 @@ SSH into the Raspberry Pi for setup:
 
 ```
 $ sudo apt update
-$ sudo apt install python3 python3-dev python3-pip python3-virtualenv vim byobu
+$ sudo apt install python3 python3-dev python3-pip python3-virtualenv libopenjp2-7 vim byobu git
 $ sudo hostnamectl set-hostname protovac
 ```
 
@@ -263,6 +263,7 @@ protovac:x:1001:1001:,,,:/home/protovac:/home/pi/protovac/main.py
 
 ```
 $ cd
+$ chmod o+rx ~
 $ git clone https://github.com/Protospace/protovac.git
 $ cd protovac/
 $ sudo tic -o /lib/terminfo/ mt70
