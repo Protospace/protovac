@@ -234,13 +234,6 @@ def print_tool_label(wiki_num):
     res.raise_for_status()
 
     label = Image.open(res.raw)
-    pixel_data = label.load()
-
-    # remove yellow background
-    for y in range(label.size[1]):
-        for x in range(label.size[0]):
-            r = min(pixel_data[x, y][0] + 4, 255)
-            pixel_data[x, y] = (r, r, r, 255)
 
     new_size = (1280, 640)
     label = label.resize(new_size, Image.ANTIALIAS)
