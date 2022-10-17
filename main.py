@@ -181,6 +181,7 @@ def print_nametag(name, guest=False):
     if guest:
         quote_size = 120
         quote = 'GUEST'
+        logging.info('Printing GUEST nametag for: %s', name)
     else:
         quote_size = 80
         name_lookup = name.lower()[:4]
@@ -190,6 +191,7 @@ def print_nametag(name, guest=False):
             quote = QUOTES[quote_count % len(QUOTES)]
             quote_count += 1
             assigned_quotes[name_lookup] = quote
+        logging.info('Printing MEMBER nametag for: %s, quote: %s', name, quote)
 
     name_size = 305
 
@@ -773,7 +775,7 @@ while True:
             messages = ['']*15
         elif button == 't' and wa_api_key:
             current_screen = 'think'
-        elif button == 'd':
+        elif c == 68:
             current_screen = 'debug'
         elif button == 'a':
             current_screen = 'about'
@@ -785,7 +787,15 @@ while True:
     elif current_screen == 'debug':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
-        if button == 'x':
+        if c == 88:
+            break
+        if c == 83:
+            curses.nocbreak()
+            stdscr.keypad(False)
+            curses.echo()
+            curses.endwin()
+            logging.info('Spawning shell.')
+            os.system('/bin/bash')
             break
         else:
             try_highlight()
