@@ -216,7 +216,7 @@ def print_nametag(name, guest=False):
     draw.text((x, y), quote, font=font, fill='black')
 
     im.save('tmp.png')
-    os.system('lp -d dymo tmp.png 2> /dev/null')
+    os.system('lp -d dymo tmp.png > /dev/null 2>&1')
 
 
 def message_protovac(message):

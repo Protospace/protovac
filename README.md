@@ -220,6 +220,8 @@ Optionally set up a cronjob:
 ```
 $ cd rootfs/  # on SD card
 $ sudo touch var/spool/cron/crontabs/pi
+$ sudo chmod u=rw,og= var/spool/cron/crontabs/pi
+$ sudo chown pi:crontab var/spool/cron/crontabs/pi
 ```
 
 Edit `var/spool/cron/crontabs/pi` (optional):
@@ -300,4 +302,10 @@ $ sudo lpadmin -p dymo -v `sudo lpinfo -v | grep DYMO | cut -d" " -f2` -m 'dymo:
 # wait...
 $ sudo cupsenable dymo
 $ sudo cupsaccept dymo
+```
+
+Test the printer:
+
+```
+$ echo "hello world" | lp -d dymo -
 ```
