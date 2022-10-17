@@ -281,3 +281,23 @@ Restart getty:
 $ sudo systemctl daemon-reload
 $ sudo systemctl restart serial-getty@ttyS0.service
 ```
+
+### Dymo LabelWriter 450 Setup
+
+Make sure it's connected with `sudo lsusb`:
+
+```
+Bus 001 Device 002: ID 0922:0020 Dymo-CoStar Corp. LabelWriter 450
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+```
+
+Install CUPS:
+
+```
+$ sudo apt-get update
+$ sudo apt-get install cups cups-client printer-driver-dymo
+$ sudo lpadmin -p dymo -v `sudo lpinfo -v | grep DYMO | cut -d" " -f2` -m 'dymo:0/cups/model/lw450.ppd'
+# wait...
+$ sudo cupsenable dymo
+$ sudo cupsaccept dymo
+```
