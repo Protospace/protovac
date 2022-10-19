@@ -258,7 +258,7 @@ def print_sheet_label(name, contact):
     contact_size = 65
     date_size = 65
 
-    im = Image.open('label.png')
+    im = Image.open(location + '/label.png')
 
     draw = ImageDraw.Draw(im)
 
