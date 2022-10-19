@@ -744,7 +744,7 @@ while True:
             stdscr.clrtoeol()
             stdscr.addstr(10, 4, 'Enter your contact info: ' + label_material_contact)
             stdscr.clrtoeol()
-            stdscr.addstr(23, 1, '[RETURN] Next  [ESC] Cancel')
+            stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
         elif label_material_name:
             stdscr.addstr(8, 4, '')
             stdscr.clrtoeol()
@@ -1062,6 +1062,7 @@ while True:
             if c == curses.KEY_BACKSPACE:
                 label_material_contact = label_material_contact[:-2] + '_'
             elif c == KEY_ESCAPE:
+                label_material_name = ''
                 label_material_contact = ''
                 stdscr.erase()
             elif c == KEY_ENTER:
@@ -1080,6 +1081,7 @@ while True:
                 label_material_name = label_material_name[:-2] + '_'
             elif c == KEY_ESCAPE:
                 label_material_name = ''
+                label_material_contact = ''
                 stdscr.erase()
             elif c == KEY_ENTER:
                 if len(label_material_name) > 1:
