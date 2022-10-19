@@ -259,6 +259,8 @@ def print_sheet_label(name, contact):
         d = d.astimezone(TIMEZONE_CALGARY)
         return d.strftime('%b %-d, %Y')
 
+    logging.info('Printing sheet label for: %s, contact: %s', name, contact)
+
     name_size = 85
     contact_size = 65
     date_size = 65
