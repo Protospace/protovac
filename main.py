@@ -669,7 +669,7 @@ while True:
         stdscr.addstr(5, 1, 'Choose between member or guest.')
 
         if nametag_member:
-            stdscr.addstr(8, 4, nametag_member)
+            stdscr.addstr(8, 4, 'Enter your name: ' + nametag_member)
             stdscr.clrtoeol()
             stdscr.addstr(10, 4, '')
             stdscr.clrtoeol()
@@ -677,7 +677,7 @@ while True:
         elif nametag_guest:
             stdscr.addstr(8, 4, '')
             stdscr.clrtoeol()
-            stdscr.addstr(10, 4, nametag_guest)
+            stdscr.addstr(10, 4, 'Enter your name: ' + nametag_guest)
             stdscr.clrtoeol()
             stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
         else:
@@ -959,6 +959,7 @@ while True:
                     print_nametag(nametag_member[:-1], guest=False)
                     stdscr.erase()
                     nametag_member = ''
+                    current_screen = 'home'
             else:
                 if c < 127 and c > 31:
                     nametag_member = nametag_member[:-1] + chr(c) + '_'
@@ -975,6 +976,7 @@ while True:
                     print_nametag(nametag_guest[:-1], guest=True)
                     stdscr.erase()
                     nametag_guest = ''
+                    current_screen = 'home'
             else:
                 if c < 127 and c > 31:
                     nametag_guest = nametag_guest[:-1] + chr(c) + '_'
