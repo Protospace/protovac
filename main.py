@@ -248,6 +248,34 @@ def print_tool_label(wiki_num):
     os.system('lp -d dymo tmp.png > /dev/null 2>&1')
 
 
+def print_sheet_label(name, contact):
+    def get_date():
+        d = datetime.now(tz=timezone.utc)
+        d = d.astimezone(TIMEZONE_CALGARY)
+        return d.strftime('%b %-d, %Y')
+
+    name_size = 85
+    contact_size = 65
+    date_size = 65
+
+    im = Image.open('label.png')
+
+    draw = ImageDraw.Draw(im)
+
+    font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', name_size)
+    draw.text((20, 300), name, font=font, fill='black')
+
+    font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', contact_size)
+    draw.text((20, 425), contact, font=font, fill='black')
+
+    font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', date_size)
+    date_line = 'Printed: ' + get_date()
+    draw.text((20, 625), date_line, font=font, fill='black')
+
+    im.save('tmp.png')
+    os.system('lp -d dymo tmp.png > /dev/null 2>&1')
+
+
 def message_protovac(message):
     try:
         logging.info('Message to Protovac: %s', message)
@@ -420,6 +448,8 @@ text_line = 0
 nametag_member = ''
 nametag_guest = ''
 label_tool = ''
+label_material_name = ''
+label_material_contact = ''
 
 logging.info('Starting main loop...')
 
@@ -428,7 +458,7 @@ last_key = time.time()
 def ratelimit_key():
     global last_key
 
-    if think_to_send or sign_to_send or message_to_send or nametag_member or nametag_guest or label_tool or time.time() > last_key + 1:
+    if think_to_send or sign_to_send or message_to_send or nametag_member or nametag_guest or label_tool or label_material_name or label_material_contact or time.time() > last_key + 1:
         last_key = time.time()
         return False
     else:
@@ -692,7 +722,7 @@ while True:
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Print a Label')
         stdscr.addstr(3, 1, '===============')
-        #stdscr.addstr(5, 1, 'Choose between member or guest.')
+        stdscr.addstr(5, 1, 'Choose the type of label.')
 
         if label_tool:
             stdscr.addstr(8, 4, 'Enter Wiki-ID tool number: ' + label_tool)
@@ -700,15 +730,21 @@ while True:
             stdscr.addstr(10, 4, '')
             stdscr.clrtoeol()
             stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
-        #elif nametag_guest:
-        #    stdscr.addstr(8, 4, '')
-        #    stdscr.clrtoeol()
-        #    stdscr.addstr(10, 4, nametag_guest)
-        #    stdscr.clrtoeol()
-        #    stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
+        elif label_material_contact:
+            stdscr.addstr(8, 4, '')
+            stdscr.clrtoeol()
+            stdscr.addstr(10, 4, 'Enter your contact info: ' + label_material_contact)
+            stdscr.clrtoeol()
+            stdscr.addstr(23, 1, '[RETURN] Next  [ESC] Cancel')
+        elif label_material_name:
+            stdscr.addstr(8, 4, '')
+            stdscr.clrtoeol()
+            stdscr.addstr(10, 4, 'Enter your name: ' + label_material_name)
+            stdscr.clrtoeol()
+            stdscr.addstr(23, 1, '[RETURN] Next  [ESC] Cancel')
         else:
             stdscr.addstr(8, 4, '[T] Tool label', curses.A_REVERSE if highlight_keys else 0)
-            #stdscr.addstr(10, 4, '[G] Guest nametag', curses.A_REVERSE if highlight_keys else 0)
+            stdscr.addstr(10, 4, '[S] Sheet material', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
 
         stdscr.clrtoeol()
@@ -1013,28 +1049,41 @@ while True:
             else:
                 if c <= 57 and c >= 48:
                     label_tool = label_tool[:-1] + chr(c) + '_'
-        #elif nametag_guest:
-        #    if c == curses.KEY_BACKSPACE:
-        #        nametag_guest = nametag_guest[:-2] + '_'
-        #    elif c == KEY_ESCAPE:
-        #        nametag_guest = ''
-        #        stdscr.erase()
-        #    elif c == KEY_ENTER:
-        #        if len(nametag_guest) > 1:
-        #            stdscr.addstr(15, 4, 'Printing...')
-        #            stdscr.refresh()
-        #            print_nametag(nametag_guest[:-1], guest=True)
-        #            stdscr.erase()
-        #            nametag_guest = ''
-        #    else:
-        #        if c < 127 and c > 31:
-        #            nametag_guest = nametag_guest[:-1] + chr(c) + '_'
+        elif label_material_contact:
+            if c == curses.KEY_BACKSPACE:
+                label_material_contact = label_material_contact[:-2] + '_'
+            elif c == KEY_ESCAPE:
+                label_material_contact = ''
+                stdscr.erase()
+            elif c == KEY_ENTER:
+                if len(label_material_contact) > 1:
+                    stdscr.addstr(15, 4, 'Printing...')
+                    stdscr.refresh()
+                    print_sheet_label(label_material_name[:-1], label_material_contact[:-1])
+                    stdscr.erase()
+                    label_material_name = ''
+                    label_material_contact = ''
+            else:
+                if c < 127 and c > 31:
+                    label_material_contact = label_material_contact[:-1] + chr(c) + '_'
+        elif label_material_name:
+            if c == curses.KEY_BACKSPACE:
+                label_material_name = label_material_name[:-2] + '_'
+            elif c == KEY_ESCAPE:
+                label_material_name = ''
+                stdscr.erase()
+            elif c == KEY_ENTER:
+                if len(label_material_name) > 1:
+                    label_material_contact = '_'
+            else:
+                if c < 127 and c > 31:
+                    label_material_name = label_material_name[:-1] + chr(c) + '_'
         elif button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
         elif button == 't':
             label_tool = '_'
-        #elif button == 'g':
-        #    nametag_guest = '_'
+        elif button == 's':
+            label_material_name = '_'
         else:
             try_highlight()
 
