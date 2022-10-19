@@ -25,7 +25,7 @@ import json
 import textwrap
 import random
 from PIL import Image, ImageEnhance, ImageFont, ImageDraw
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 try:
     import secrets
@@ -254,6 +254,11 @@ def print_sheet_label(name, contact):
         d = d.astimezone(TIMEZONE_CALGARY)
         return d.strftime('%b %-d, %Y')
 
+    def get_expiry_date():
+        d = datetime.now(tz=timezone.utc) + timedelta(days=90)
+        d = d.astimezone(TIMEZONE_CALGARY)
+        return d.strftime('%b %-d, %Y')
+
     name_size = 85
     contact_size = 65
     date_size = 65
@@ -270,7 +275,9 @@ def print_sheet_label(name, contact):
 
     font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', date_size)
     date_line = 'Printed: ' + get_date()
-    draw.text((20, 625), date_line, font=font, fill='black')
+    draw.text((20, 590), date_line, font=font, fill='black')
+    date_line = 'EXPIRES: ' + get_expiry_date()
+    draw.text((20, 680), date_line, font=font, fill='black')
 
     im.save('tmp.png')
     os.system('lp -d dymo tmp.png > /dev/null 2>&1')

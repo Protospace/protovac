@@ -1,7 +1,7 @@
 from PIL import Image, ImageEnhance, ImageFont, ImageDraw
 import requests
 import pytz
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 TIMEZONE_CALGARY = pytz.timezone('America/Edmonton')
 
@@ -9,6 +9,11 @@ TIMEZONE_CALGARY = pytz.timezone('America/Edmonton')
 def print_sheet_label(name, contact):
     def get_date():
         d = datetime.now(tz=timezone.utc)
+        d = d.astimezone(TIMEZONE_CALGARY)
+        return d.strftime('%b %-d, %Y')
+
+    def get_expiry_date():
+        d = datetime.now(tz=timezone.utc) + timedelta(days=90)
         d = d.astimezone(TIMEZONE_CALGARY)
         return d.strftime('%b %-d, %Y')
 
@@ -28,7 +33,9 @@ def print_sheet_label(name, contact):
 
     font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', date_size)
     date_line = 'Printed: ' + get_date()
-    draw.text((20, 625), date_line, font=font, fill='black')
+    draw.text((20, 590), date_line, font=font, fill='black')
+    date_line = 'EXPIRES: ' + get_expiry_date()
+    draw.text((20, 680), date_line, font=font, fill='black')
 
     im.save('tmp.png')
 
