@@ -443,6 +443,8 @@ curses.curs_set(0)
 
 highlight_keys = False
 highlight_debounce = time.time()
+highlight_count = 0
+help_return = ''
 sign_to_send = ''
 messages = ['']*15
 message_to_send = ''
@@ -839,6 +841,15 @@ while True:
         stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
         stdscr.refresh()
 
+    elif current_screen == 'help':
+        stdscr.addstr(8, 1,  '       Press the key corresponding to the menu item you want to select.')
+        stdscr.addstr(10, 1, '       For example, if the menu item is:')
+        stdscr.addstr(12, 1, '                                  [O] Okay')
+        stdscr.addstr(14, 1, '       You would press the "O" key. Look at the bottom for more options.')
+
+        stdscr.addstr(23, 1, '[O] Okay', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.refresh()
+
     stdscr.move(23, 79)
 
     if highlight_keys:
@@ -863,11 +874,19 @@ while True:
         button = None
 
     def try_highlight():
-        global c, highlight_debounce, highlight_keys
+        global c, highlight_debounce, highlight_keys, highlight_count, current_screen, help_return
+
         if c and time.time() - highlight_debounce > 0.6:
             highlight_debounce = time.time()
             highlight_keys = True
             curses.beep()
+
+            highlight_count += 1
+
+        if highlight_count >= 3:
+            highlight_count = 0
+            help_return = current_screen
+            current_screen = 'help'
 
     if current_screen == 'home':
         if button == 's':
@@ -924,6 +943,12 @@ while True:
     elif current_screen == 'about':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
+        else:
+            try_highlight()
+
+    elif current_screen == 'help':
+        if button == 'o':
+            current_screen = help_return
         else:
             try_highlight()
 
@@ -1202,6 +1227,9 @@ while True:
         prev_screen = current_screen
         logging.info('Switching to screen: %s', current_screen)
         stdscr.erase()
+
+        if current_screen != 'help':
+            highlight_count = 0
 
 
 curses.nocbreak()
