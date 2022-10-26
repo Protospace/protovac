@@ -444,7 +444,6 @@ curses.curs_set(0)
 highlight_keys = False
 highlight_debounce = time.time()
 highlight_count = 0
-help_return = ''
 sign_to_send = ''
 messages = ['']*15
 message_to_send = ''
@@ -874,7 +873,7 @@ while True:
         button = None
 
     def try_highlight():
-        global c, highlight_debounce, highlight_keys, highlight_count, current_screen, help_return
+        global c, highlight_debounce, highlight_keys, highlight_count, current_screen
 
         if c and time.time() - highlight_debounce > 0.6:
             highlight_debounce = time.time()
@@ -885,7 +884,6 @@ while True:
 
         if highlight_count >= 3:
             highlight_count = 0
-            help_return = current_screen
             current_screen = 'help'
 
     if current_screen == 'home':
@@ -948,7 +946,7 @@ while True:
 
     elif current_screen == 'help':
         if button == 'o':
-            current_screen = help_return
+            current_screen = 'home'
         else:
             try_highlight()
 
