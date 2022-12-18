@@ -285,6 +285,64 @@ def print_sheet_label(name, contact):
     os.system('lp -d dymo tmp.png > /dev/null 2>&1')
 
 
+def print_generic_label(text):
+    MARGIN = 50
+    MAX_W, MAX_H, PAD = 1285 - (MARGIN*2), 635 - (MARGIN*2), 5
+
+    im = Image.open(location + '/label.png')
+    width, height = im.size
+    draw = ImageDraw.Draw(im)
+
+    def fit_text(text, font_size):
+        font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', font_size)
+
+        for cols in range(100, 1, -4):
+            paragraph = textwrap.wrap(text, width=cols)
+
+            total_h = -PAD
+            total_w = 0
+
+            for line in paragraph:
+                w, h = draw.textsize(line, font=font)
+                if w > total_w:
+                    total_w = w
+                total_h += h + PAD
+
+            if total_w <= MAX_W and total_h < MAX_H:
+                return True, paragraph, total_h
+
+        return False, [], 0
+
+    font_size_range = [1, 500]
+
+    # Thanks to Alex (UDIA) for the binary search algorithm
+    while abs(font_size_range[0] - font_size_range[1]) > 1:
+        font_size = sum(font_size_range) // 2
+        image_fit, check_para, check_h = fit_text(text, font_size)
+        if image_fit:
+            font_size_range = [font_size, font_size_range[1]]
+            good_size = font_size
+            paragraph = check_para
+            total_h = check_h
+        else:
+            font_size_range = [font_size_range[0], font_size]
+
+    font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', good_size)
+    offset = height - MAX_H - MARGIN
+    start_h = (MAX_H - total_h) // 2 + offset
+
+    current_h = start_h
+    for line in paragraph:
+        w, h = draw.textsize(line, font=font)
+        x, y = (MAX_W - w) / 2, current_h
+        draw.text((x+MARGIN, y), line, font=font, fill='black')
+        current_h += h + PAD
+
+
+    im.save('tmp.png')
+    os.system('lp -d dymo tmp.png > /dev/null 2>&1')
+
+
 def message_protovac(message):
     try:
         logging.info('Message to Protovac: %s', message)
@@ -460,6 +518,7 @@ nametag_guest = ''
 label_tool = ''
 label_material_name = ''
 label_material_contact = ''
+label_generic = ''
 
 logging.info('Starting main loop...')
 
@@ -468,7 +527,7 @@ last_key = time.time()
 def ratelimit_key():
     global last_key
 
-    if think_to_send or sign_to_send or message_to_send or nametag_member or nametag_guest or label_tool or label_material_name or label_material_contact or time.time() > last_key + 1:
+    if think_to_send or sign_to_send or message_to_send or nametag_member or nametag_guest or label_tool or label_material_name or label_material_contact or label_generic or time.time() > last_key + 1:
         last_key = time.time()
         return False
     else:
@@ -739,11 +798,15 @@ while True:
             stdscr.clrtoeol()
             stdscr.addstr(10, 4, '')
             stdscr.clrtoeol()
+            stdscr.addstr(12, 4, '')
+            stdscr.clrtoeol()
             stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
         elif label_material_contact:
             stdscr.addstr(8, 4, '')
             stdscr.clrtoeol()
             stdscr.addstr(10, 4, 'Enter your contact info: ' + label_material_contact)
+            stdscr.clrtoeol()
+            stdscr.addstr(12, 4, '')
             stdscr.clrtoeol()
             stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
         elif label_material_name:
@@ -751,10 +814,21 @@ while True:
             stdscr.clrtoeol()
             stdscr.addstr(10, 4, 'Enter your name: ' + label_material_name)
             stdscr.clrtoeol()
+            stdscr.addstr(12, 4, '')
+            stdscr.clrtoeol()
             stdscr.addstr(23, 1, '[RETURN] Next  [ESC] Cancel')
+        elif label_generic:
+            stdscr.addstr(8, 4, '')
+            stdscr.clrtoeol()
+            stdscr.addstr(10, 4, '')
+            stdscr.clrtoeol()
+            stdscr.addstr(12, 4, 'Enter your message: ' + label_generic)
+            stdscr.clrtoeol()
+            stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
         else:
             stdscr.addstr(8, 4, '[T] Tool label', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(10, 4, '[S] Sheet material', curses.A_REVERSE if highlight_keys else 0)
+            stdscr.addstr(12, 4, '[G] Generic label', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
 
         stdscr.clrtoeol()
@@ -1112,12 +1186,37 @@ while True:
             else:
                 if c < 127 and c > 31:
                     label_material_name = label_material_name[:-1] + chr(c) + '_'
+        elif label_generic:
+            if c == curses.KEY_BACKSPACE:
+                label_generic = label_generic[:-2] + '_'
+            elif c == KEY_ESCAPE:
+                label_generic = ''
+                stdscr.erase()
+            elif c == KEY_ENTER:
+                if len(label_generic) > 1:
+                    stdscr.addstr(15, 4, 'Printing...')
+                    stdscr.refresh()
+                    try:
+                        print_generic_label(label_generic[:-1])
+                    except BaseException as e:
+                        logging.exception(e)
+                        stdscr.addstr(15, 4, 'Error.')
+                        stdscr.clrtoeol()
+                        stdscr.refresh()
+                        time.sleep(2)
+                    stdscr.erase()
+                    label_generic = ''
+            else:
+                if c < 127 and c > 31:
+                    label_generic = label_generic[:-1] + chr(c) + '_'
         elif button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
         elif button == 't':
             label_tool = '_'
         elif button == 's':
             label_material_name = '_'
+        elif button == 'g':
+            label_generic = '_'
         else:
             try_highlight()
 
