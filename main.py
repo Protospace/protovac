@@ -1078,11 +1078,12 @@ while True:
             protocoin = {}
             protocoin_line = 0
         elif button == 'j' or c == curses.KEY_DOWN or c == KEY_SPACE:
-            protocoin_line += 1
-            stdscr.erase()
+            if protocoin_line+19 < len(lines):
+                protocoin_line += 19
+                stdscr.erase()
         elif button == 'k' or c == curses.KEY_UP:
             if protocoin_line > 0:
-                protocoin_line -= 1
+                protocoin_line -= 19
                 stdscr.erase()
         else:
             try_highlight()
