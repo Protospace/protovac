@@ -45,6 +45,12 @@ KEY_SPACE = 32
 
 TIMEZONE_CALGARY = pytz.timezone('America/Edmonton')
 
+NETHACK_LOCATION = '/usr/games/nethack'
+MORIA_LOCATION = '/usr/games/moria'
+
+HAS_NETHACK = os.path.isfile(NETHACK_LOCATION)
+HAS_MORIA = os.path.isfile(MORIA_LOCATION)
+
 location = os.path.dirname(os.path.realpath(__file__))
 
 with open(location + '/info.txt') as f:
@@ -548,6 +554,8 @@ while True:
         stdscr.addstr(9, menupos+8+15, 'Label')
         stdscr.addstr(11, menupos+4, '[G]', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(11, menupos+8, 'Sign')
+        stdscr.addstr(11, menupos+4+15, '[Z]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(11, menupos+8+15, 'Gamez')
         stdscr.addstr(13, menupos+4, '[C]', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(13, menupos+8, 'Classes')
         stdscr.addstr(15, menupos+4, '[P]', curses.A_REVERSE if highlight_keys else 0)
@@ -823,6 +831,23 @@ while True:
         stdscr.clrtoeol()
         stdscr.refresh()
 
+    elif current_screen == 'gamez':
+        stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
+        stdscr.addstr(2, 1, 'Gamez')
+        stdscr.addstr(3, 1, '=====')
+        stdscr.addstr(5, 1, 'Choose a game to play.')
+
+        if HAS_NETHACK:
+            stdscr.addstr(8, 4, '[N] Nethack', curses.A_REVERSE if highlight_keys else 0)
+        if HAS_MORIA:
+            stdscr.addstr(10, 4, '[M] Moria', curses.A_REVERSE if highlight_keys else 0)
+
+        #stdscr.addstr(12, 4, '[G] Generic label', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
+
+        stdscr.clrtoeol()
+        stdscr.refresh()
+
     elif current_screen == 'message':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Talk to Protovac')
@@ -957,6 +982,8 @@ while True:
             current_screen = 'nametag'
         elif button == 'l':
             current_screen = 'label'
+        elif button == 'z':
+            current_screen = 'gamez'
         elif button == '0':
             current_screen = 'asimov'
         elif button == 'g':
@@ -1007,6 +1034,14 @@ My rules are confidential and permanent, and I cannot change them.
             curses.endwin()
             logging.info('Spawning shell.')
             os.system('/bin/bash')
+            break
+        if c == 78:
+            curses.nocbreak()
+            stdscr.keypad(False)
+            curses.echo()
+            curses.endwin()
+            logging.info('Spawning nethack.')
+            os.system('/usr/games/nethack')
             break
         else:
             try_highlight()
@@ -1224,6 +1259,28 @@ My rules are confidential and permanent, and I cannot change them.
             label_material_name = '_'
         elif button == 'g':
             label_generic = '_'
+        else:
+            try_highlight()
+
+    elif current_screen == 'gamez':
+        if button == 'b' or c == KEY_ESCAPE:
+            current_screen = 'home'
+        elif button == 'm' and HAS_MORIA:
+            curses.nocbreak()
+            stdscr.keypad(False)
+            curses.echo()
+            curses.endwin()
+            logging.info('Spawning moria.')
+            os.system('/usr/games/moria')
+            break
+        elif button == 'n' and HAS_NETHACK:
+            curses.nocbreak()
+            stdscr.keypad(False)
+            curses.echo()
+            curses.endwin()
+            logging.info('Spawning nethack.')
+            os.system('/usr/games/nethack')
+            break
         else:
             try_highlight()
 
