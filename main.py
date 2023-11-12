@@ -47,9 +47,11 @@ TIMEZONE_CALGARY = pytz.timezone('America/Edmonton')
 
 NETHACK_LOCATION = '/usr/games/nethack'
 MORIA_LOCATION = '/usr/games/moria'
+_2048_LOCATION = '/home/pi/2048-cli/2048'
 
 HAS_NETHACK = os.path.isfile(NETHACK_LOCATION)
 HAS_MORIA = os.path.isfile(MORIA_LOCATION)
+HAS_2048 = os.path.isfile(_2048_LOCATION)
 
 location = os.path.dirname(os.path.realpath(__file__))
 
@@ -841,8 +843,9 @@ while True:
             stdscr.addstr(8, 4, '[N] Nethack', curses.A_REVERSE if highlight_keys else 0)
         if HAS_MORIA:
             stdscr.addstr(10, 4, '[M] Moria', curses.A_REVERSE if highlight_keys else 0)
+        if HAS_2048:
+            stdscr.addstr(12, 4, '[2] 2048', curses.A_REVERSE if highlight_keys else 0)
 
-        #stdscr.addstr(12, 4, '[G] Generic label', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
 
         stdscr.clrtoeol()
@@ -1265,13 +1268,21 @@ My rules are confidential and permanent, and I cannot change them.
     elif current_screen == 'gamez':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
+        elif button == '2' and HAS_2048:
+            curses.nocbreak()
+            stdscr.keypad(False)
+            curses.echo()
+            curses.endwin()
+            logging.info('Spawning moria.')
+            os.system(_2048_LOCATION)
+            break
         elif button == 'm' and HAS_MORIA:
             curses.nocbreak()
             stdscr.keypad(False)
             curses.echo()
             curses.endwin()
             logging.info('Spawning moria.')
-            os.system('/usr/games/moria')
+            os.system(MORIA_LOCATION)
             break
         elif button == 'n' and HAS_NETHACK:
             curses.nocbreak()
@@ -1279,7 +1290,7 @@ My rules are confidential and permanent, and I cannot change them.
             curses.echo()
             curses.endwin()
             logging.info('Spawning nethack.')
-            os.system('/usr/games/nethack')
+            os.system(NETHACK_LOCATION)
             break
         else:
             try_highlight()
