@@ -562,7 +562,7 @@ while True:
         stdscr.addstr(11, menupos+4, '[G]', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(11, menupos+8, 'Sign')
         stdscr.addstr(11, menupos+4+15, '[Z]', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(11, menupos+8+15, 'Gamez')
+        stdscr.addstr(11, menupos+8+15, 'Games')
         stdscr.addstr(13, menupos+4, '[C]', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(13, menupos+8, 'Classes')
         stdscr.addstr(15, menupos+4, '[P]', curses.A_REVERSE if highlight_keys else 0)
@@ -838,9 +838,9 @@ while True:
         stdscr.clrtoeol()
         stdscr.refresh()
 
-    elif current_screen == 'gamez':
+    elif current_screen == 'games':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
-        stdscr.addstr(2, 1, 'Gamez')
+        stdscr.addstr(2, 1, 'Games')
         stdscr.addstr(3, 1, '=====')
         stdscr.addstr(5, 1, 'Choose a game to play.')
 
@@ -993,7 +993,7 @@ while True:
         elif button == 'l':
             current_screen = 'label'
         elif button == 'z':
-            current_screen = 'gamez'
+            current_screen = 'games'
         elif button == '0':
             current_screen = 'asimov'
         elif button == 'g':
@@ -1272,7 +1272,7 @@ My rules are confidential and permanent, and I cannot change them.
         else:
             try_highlight()
 
-    elif current_screen == 'gamez':
+    elif current_screen == 'games':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
         elif button == 'h' and HAS_FROTZ and HAS_HITCHHIKERS:
