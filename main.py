@@ -50,12 +50,14 @@ MORIA_LOCATION = '/usr/games/moria'
 _2048_LOCATION = '/home/pi/2048-cli/2048'
 FROTZ_LOCATION = '/usr/games/frotz'
 HITCHHIKERS_LOCATION = '/home/pi/frotz/hhgg.z3'
+SUDOKU_LOCATION = '/usr/games/nudoku'
 
 HAS_NETHACK = os.path.isfile(NETHACK_LOCATION)
 HAS_MORIA = os.path.isfile(MORIA_LOCATION)
 HAS_2048 = os.path.isfile(_2048_LOCATION)
 HAS_FROTZ = os.path.isfile(FROTZ_LOCATION)
 HAS_HITCHHIKERS = os.path.isfile(HITCHHIKERS_LOCATION)
+HAS_SUDOKU = os.path.isfile(SUDOKU_LOCATION)
 
 
 location = os.path.dirname(os.path.realpath(__file__))
@@ -852,6 +854,8 @@ while True:
             stdscr.addstr(12, 4, '[2] 2048', curses.A_REVERSE if highlight_keys else 0)
         if HAS_FROTZ and HAS_HITCHHIKERS:
             stdscr.addstr(14, 4, '[H] Hitchhiker\'s Guide to the Galaxy', curses.A_REVERSE if highlight_keys else 0)
+        if HAS_SUDOKU:
+            stdscr.addstr(16, 4, '[S] Sudoku', curses.A_REVERSE if highlight_keys else 0)
 
         stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
 
@@ -1275,6 +1279,14 @@ My rules are confidential and permanent, and I cannot change them.
     elif current_screen == 'games':
         if button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
+        elif button == 's' and HAS_SUDOKU:
+            curses.nocbreak()
+            stdscr.keypad(False)
+            curses.echo()
+            curses.endwin()
+            logging.info('Spawning sudoku.')
+            os.system(SUDOKU_LOCATION + ' -c')
+            break
         elif button == 'h' and HAS_FROTZ and HAS_HITCHHIKERS:
             curses.nocbreak()
             stdscr.keypad(False)
