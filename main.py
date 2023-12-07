@@ -337,7 +337,7 @@ def print_generic_label(text):
         font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', font_size)
 
         for cols in range(100, 1, -4):
-            paragraph = textwrap.wrap(text, width=cols)
+            paragraph = textwrap.wrap(text, width=cols, break_long_words=False)
 
             total_h = -PAD
             total_w = 0

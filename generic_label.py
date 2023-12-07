@@ -2,7 +2,7 @@ from PIL import Image, ImageEnhance, ImageFont, ImageDraw
 import textwrap
 
 text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
+text = 'Extension cables'
 
 MARGIN = 50
 MAX_W, MAX_H, PAD = 1285 - (MARGIN*2), 635 - (MARGIN*2), 5
@@ -17,7 +17,7 @@ def fit_text(text, font_size):
     for cols in range(100, 1, -4):
         print('trying size', font_size, 'cols', cols)
 
-        paragraph = textwrap.wrap(text, width=cols)
+        paragraph = textwrap.wrap(text, width=cols, break_long_words=False)
 
         total_h = -PAD
         total_w = 0
