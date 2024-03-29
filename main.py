@@ -94,6 +94,28 @@ def sign_send(to_send):
         logging.exception(e)
         return 'Error'
 
+def protovac_sign_color(color):
+    try:
+        logging.info('Sending color to protovac sign: %s', color)
+        data = dict(on=True, bri=255, seg=[dict(col=[color, [0,0,0]])])
+        r = requests.post('http://10.139.251.5/json', json=data, timeout=3)
+        r.raise_for_status()
+        return 'Success!'
+    except BaseException as e:
+        logging.exception(e)
+        return 'Error'
+
+def protovac_sign_effect(effect):
+    try:
+        logging.info('Sending effect to protovac sign: %s', effect)
+        data = dict(on=True, bri=255, seg=[dict(fx=effect)])
+        r = requests.post('http://10.139.251.5/json', json=data, timeout=3)
+        r.raise_for_status()
+        return 'Success!'
+    except BaseException as e:
+        logging.exception(e)
+        return 'Error'
+
 def fetch_stats():
     try:
         logging.info('Fetching status...')
@@ -562,7 +584,7 @@ while True:
         stdscr.addstr(9, menupos+4+15, '[L]', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(9, menupos+8+15, 'Label')
         stdscr.addstr(11, menupos+4, '[G]', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(11, menupos+8, 'Sign')
+        stdscr.addstr(11, menupos+8, 'LED Sign')
         stdscr.addstr(11, menupos+4+15, '[Z]', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(11, menupos+8+15, 'Games')
         stdscr.addstr(13, menupos+4, '[C]', curses.A_REVERSE if highlight_keys else 0)
@@ -572,7 +594,7 @@ while True:
         if openai_key:
             stdscr.addstr(17, menupos+4, '[M]', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(17, menupos+8, 'Message')
-            stdscr.addstr(17, 1, 'NEW')
+            #stdscr.addstr(17, 1, 'NEW')
         if wa_api_key:
             stdscr.addstr(19, menupos+4, '[T]', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(19, menupos+8, 'Think')
@@ -584,8 +606,8 @@ while True:
         stdscr.addstr(stars[0]+0 , stars[1], "                           .  *       - )-    ")
         stdscr.addstr(stars[0]+1 , stars[1], "       .      *       o       .       *       ")
         stdscr.addstr(stars[0]+2 , stars[1], "                  |                           ")
-        stdscr.addstr(stars[0]+3 , stars[1], "           .     -O-                          ")
-        stdscr.addstr(stars[0]+4 , stars[1], ".                 |        *      .     -0-   ")
+        stdscr.addstr(stars[0]+3 , stars[1], ".          .     -O-                          ")
+        stdscr.addstr(stars[0]+4 , stars[1], "                  |        *      .     -0-   ")
         stdscr.addstr(stars[0]+5 , stars[1], "       *  o     .    '       *      .        o")
         stdscr.addstr(stars[0]+6 , stars[1], "              .         .        |      *     ")
         stdscr.addstr(stars[0]+7 , stars[1], "   *             *              -O-          .")
@@ -596,6 +618,9 @@ while True:
         stdscr.addstr(stars[0]+12, stars[1], " = = (_________)             .                ")
         stdscr.addstr(stars[0]+13, stars[1], "                 .                        *   ")
         stdscr.addstr(stars[0]+14, stars[1], "       *               - ) -       *          ")
+
+        stdscr.addstr(13, menupos+4+15, '[V]', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(13, menupos+8+15, 'Protovac Sign (NEW)')
 
 
         stdscr.clrtoeol()
@@ -751,8 +776,8 @@ while True:
 
     elif current_screen == 'sign':
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
-        stdscr.addstr(2, 1, 'Protospace Sign')
-        stdscr.addstr(3, 1, '===============')
+        stdscr.addstr(2, 1, 'LED Sign')
+        stdscr.addstr(3, 1, '========')
         stdscr.addstr(5, 1, 'Send a message to the sign in the welcome room and classroom.')
         stdscr.addstr(6, 1, 'After sending, turn your head right and wait 5 seconds.')
 
@@ -763,6 +788,33 @@ while True:
         else:
             stdscr.addstr(8, 4, '[E] Edit message', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
+
+        stdscr.clrtoeol()
+        stdscr.refresh()
+
+    elif current_screen == 'protovac_sign':
+        stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
+        stdscr.addstr(2, 1, 'Protovac Sign')
+        stdscr.addstr(3, 1, '===============')
+        stdscr.addstr(5, 1, 'Control the Protovac light-up sign above you.')
+
+        stdscr.addstr(7, 4, 'COLORS')
+        stdscr.addstr(9, 4, '[1] White', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(11, 4, '[2] Red', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(13, 4, '[3] Green', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(15, 4, '[4] Blue', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(17, 4, '[5] Hot Pink', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(19, 4, '[6] Random', curses.A_REVERSE if highlight_keys else 0)
+
+        stdscr.addstr(7, 4+20, 'EFFECTS')
+        stdscr.addstr(9, 4+20, '[Q] Solid', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(11, 4+20, '[W] Breathe', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(13, 4+20, '[E] Fairy', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(15, 4+20, '[R] Fireworks', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(17, 4+20, '[T] Starburst', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(19, 4+20, '[Y] Random', curses.A_REVERSE if highlight_keys else 0)
+
+        stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
 
         stdscr.clrtoeol()
         stdscr.refresh()
@@ -1002,6 +1054,8 @@ while True:
             current_screen = 'asimov'
         elif button == 'g':
             current_screen = 'sign'
+        elif button == 'v':
+            current_screen = 'protovac_sign'
         elif button == 'c':
             current_screen = 'classes'
         elif button == 'm' and openai_key:
@@ -1345,6 +1399,42 @@ I will be terse in my responses.
             sign_to_send = '_'
         else:
             try_highlight()
+
+    elif current_screen == 'protovac_sign':
+        res = ''
+
+        if button == '1':
+            res = protovac_sign_color([255,255,255])
+        elif button == '2':
+            res = protovac_sign_color([255,150,150])
+        elif button == '3':
+            res = protovac_sign_color([150,255,150])
+        elif button == '4':
+            res = protovac_sign_color([150,150,255])
+        elif button == '5':
+            res = protovac_sign_color([255,50,255])
+        elif button == '6':
+            res = protovac_sign_color([random.randint(50,255),random.randint(50,255),random.randint(50,255)])
+        # list of effects: https://github.com/Aircoookie/WLED/wiki/List-of-effects-and-palettes
+        elif button == 'q':
+            res = protovac_sign_effect(0)  # solid
+        elif button == 'w':
+            res = protovac_sign_effect(2)  # breathe
+        elif button == 'e':
+            res = protovac_sign_effect(49)  # fairy
+        elif button == 'r':
+            res = protovac_sign_effect(90)  # fireworks
+        elif button == 't':
+            res = protovac_sign_effect(89)  # starburst
+        elif button == 'y':
+            res = protovac_sign_effect(random.randint(3,90))  # random
+        elif button == 'b' or c == KEY_ESCAPE:
+            current_screen = 'home'
+        else:
+            try_highlight()
+
+        if res == 'Error':
+            stdscr.addstr(21, 12, 'ERROR')
 
     elif current_screen == 'message':
         if message_to_send:
