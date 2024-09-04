@@ -1483,14 +1483,14 @@ I will be terse in my responses.
         res = ''
 
         if button == 'r':
-            res = mqtt_publish('train/control', -150)
-            logging.info('Setting train speed to: -150')
+            res = mqtt_publish('train/control', -140)
+            logging.info('Setting train speed to: -140')
         elif button == 't':
             res = mqtt_publish('train/control', 0)
             logging.info('Setting train speed to: 0')
         elif button == 'y':
-            res = mqtt_publish('train/control', 150)
-            logging.info('Setting train speed to: 150')
+            res = mqtt_publish('train/control', 160)
+            logging.info('Setting train speed to: 160')
 
         elif button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
