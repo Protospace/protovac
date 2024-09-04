@@ -26,6 +26,7 @@ import textwrap
 import random
 from PIL import Image, ImageEnhance, ImageFont, ImageDraw
 from datetime import datetime, timezone, timedelta
+import paho.mqtt.publish as publish
 
 try:
     import secrets
@@ -145,6 +146,24 @@ def fetch_protocoin():
     except BaseException as e:
         logging.exception(e)
         return 'Error'
+
+def mqtt_publish(topic, message):
+    if not secrets.MQTT_WRITER_PASSWORD:
+        return False
+
+    try:
+        publish.single(
+            topic,
+            str(message),
+            hostname='webhost.protospace.ca',
+            port=8883,
+            client_id='protovac',
+            auth=dict(username='writer', password=secrets.MQTT_WRITER_PASSWORD),
+            tls=dict(ca_certs='/etc/ssl/certs/ISRG_Root_X1.pem'),
+            keepalive=5,  # timeout
+        )
+    except BaseException as e:
+        logging.error('Problem sending MQTT message: ' + str(e))
 
 QUOTES = [
     'THEY MADE ME WEAR THIS',
@@ -610,7 +629,7 @@ while True:
         stdscr.addstr(stars[0]+4 , stars[1], "                  |        *      .     -0-   ")
         stdscr.addstr(stars[0]+5 , stars[1], "       *  o     .    '       *      .        o")
         stdscr.addstr(stars[0]+6 , stars[1], "              .         .        |      *     ")
-        stdscr.addstr(stars[0]+7 , stars[1], "   *             *              -O-          .")
+        stdscr.addstr(stars[0]+7 , stars[1], "                 *              -O-          .")
         stdscr.addstr(stars[0]+8 , stars[1], "         .             *         |     ,      ")
         stdscr.addstr(stars[0]+9 , stars[1], "                .           o                 ")
         stdscr.addstr(stars[0]+10, stars[1], "        .---.                                 ")
@@ -620,7 +639,10 @@ while True:
         stdscr.addstr(stars[0]+14, stars[1], "       *               - ) -       *          ")
 
         stdscr.addstr(13, menupos+4+15, '[V]', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(13, menupos+8+15, 'Protovac Sign (NEW)')
+        stdscr.addstr(13, menupos+8+15, 'Protovac Sign')
+
+        #stdscr.addstr(15, menupos+4+15, '[R]', curses.A_REVERSE if highlight_keys else 0)
+        #stdscr.addstr(15, menupos+8+15, 'Train Control (NEW)')
 
 
         stdscr.clrtoeol()
@@ -813,6 +835,25 @@ while True:
         stdscr.addstr(15, 4+20, '[R] Fireworks', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(17, 4+20, '[T] Starburst', curses.A_REVERSE if highlight_keys else 0)
         stdscr.addstr(19, 4+20, '[Y] Random', curses.A_REVERSE if highlight_keys else 0)
+
+        stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
+
+        stdscr.clrtoeol()
+        stdscr.refresh()
+
+    elif current_screen == 'train':
+        stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
+        stdscr.addstr(2, 1, 'Protospace Train')
+        stdscr.addstr(3, 1, '================')
+        stdscr.addstr(5, 1, 'Control the Mr. Bones Wild Ride train.')
+
+        stdscr.addstr(7, 4, 'SPEED')
+        stdscr.addstr(9, 4, '[R] Reverse', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(11, 4, '[T] Stop', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(13, 4, '[Y] Forward', curses.A_REVERSE if highlight_keys else 0)
+        #stdscr.addstr(15, 4, '[4] Blue', curses.A_REVERSE if highlight_keys else 0)
+        #stdscr.addstr(17, 4, '[5] Hot Pink', curses.A_REVERSE if highlight_keys else 0)
+        #stdscr.addstr(19, 4, '[6] Random', curses.A_REVERSE if highlight_keys else 0)
 
         stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
 
@@ -1056,6 +1097,8 @@ while True:
             current_screen = 'sign'
         elif button == 'v':
             current_screen = 'protovac_sign'
+        elif button == 'r':
+            current_screen = 'train'
         elif button == 'c':
             current_screen = 'classes'
         elif button == 'm' and openai_key:
@@ -1428,6 +1471,27 @@ I will be terse in my responses.
             res = protovac_sign_effect(89)  # starburst
         elif button == 'y':
             res = protovac_sign_effect(random.randint(3,90))  # random
+        elif button == 'b' or c == KEY_ESCAPE:
+            current_screen = 'home'
+        else:
+            try_highlight()
+
+        if res == 'Error':
+            stdscr.addstr(21, 12, 'ERROR')
+
+    elif current_screen == 'train':
+        res = ''
+
+        if button == 'r':
+            res = mqtt_publish('train/control', -150)
+            logging.info('Setting train speed to: -150')
+        elif button == 't':
+            res = mqtt_publish('train/control', 0)
+            logging.info('Setting train speed to: 0')
+        elif button == 'y':
+            res = mqtt_publish('train/control', 150)
+            logging.info('Setting train speed to: 150')
+
         elif button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
         else:
