@@ -155,11 +155,9 @@ def mqtt_publish(topic, message):
         publish.single(
             topic,
             str(message),
-            hostname='webhost.protospace.ca',
-            port=8883,
+            hostname='172.17.17.181',
+            port=1883,
             client_id='protovac',
-            auth=dict(username='writer', password=secrets.MQTT_WRITER_PASSWORD),
-            tls=dict(ca_certs='/etc/ssl/certs/ISRG_Root_X1.pem'),
             keepalive=5,  # timeout
         )
     except BaseException as e:
@@ -1483,13 +1481,13 @@ I will be terse in my responses.
         res = ''
 
         if button == 'r':
-            res = mqtt_publish('train/control', -140)
+            res = mqtt_publish('train/control/speed', -140)
             logging.info('Setting train speed to: -140')
         elif button == 't':
-            res = mqtt_publish('train/control', 0)
+            res = mqtt_publish('train/control/speed', 0)
             logging.info('Setting train speed to: 0')
         elif button == 'y':
-            res = mqtt_publish('train/control', 160)
+            res = mqtt_publish('train/control/speed', 160)
             logging.info('Setting train speed to: 160')
 
         elif button == 'b' or c == KEY_ESCAPE:
