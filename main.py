@@ -846,9 +846,9 @@ while True:
         stdscr.addstr(5, 1, 'Control the Mr. Bones Wild Ride train.')
 
         stdscr.addstr(7, 4, 'SPEED')
-        stdscr.addstr(9, 4, '[R] Reverse', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(11, 4, '[T] Stop', curses.A_REVERSE if highlight_keys else 0)
-        stdscr.addstr(13, 4, '[Y] Forward', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(9, 4, '[F] Forward', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(11, 4, '[R] Reverse', curses.A_REVERSE if highlight_keys else 0)
+        stdscr.addstr(13, 4, '[SPACE] Stop', curses.A_REVERSE if highlight_keys else 0)
         #stdscr.addstr(15, 4, '[4] Blue', curses.A_REVERSE if highlight_keys else 0)
         #stdscr.addstr(17, 4, '[5] Hot Pink', curses.A_REVERSE if highlight_keys else 0)
         #stdscr.addstr(19, 4, '[6] Random', curses.A_REVERSE if highlight_keys else 0)
@@ -1483,10 +1483,10 @@ I will be terse in my responses.
         if button == 'r':
             res = mqtt_publish('train/control/speed', -140)
             logging.info('Setting train speed to: -140')
-        elif button == 't':
+        elif button == 't' or c == KEY_SPACE:
             res = mqtt_publish('train/control/speed', 0)
             logging.info('Setting train speed to: 0')
-        elif button == 'y':
+        elif button == 'f':
             res = mqtt_publish('train/control/speed', 160)
             logging.info('Setting train speed to: 160')
 
