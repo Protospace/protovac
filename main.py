@@ -24,6 +24,8 @@ import time
 import json
 import textwrap
 import random
+import qrcode
+import urllib.parse
 from PIL import Image, ImageEnhance, ImageFont, ImageDraw
 from datetime import datetime, timezone, timedelta
 import paho.mqtt.publish as publish
@@ -421,6 +423,35 @@ def print_generic_label(text):
     im.save('tmp.png')
     os.system('lp -d dymo tmp.png > /dev/null 2>&1')
 
+def print_consumable_label(item):
+    im = Image.open(location + '/label.png')
+    width, height = im.size
+    draw = ImageDraw.Draw(im)
+
+    encodeded = urllib.parse.quote(item)
+    url = 'https://spaceport.dns.t0.vc/out-of-stock?item=' + encodeded
+
+    qr = qrcode.make(url, version=6, box_size=10)
+    im.paste(qr, (800, 280))
+
+    item_size = 150
+
+    w = 9999
+    while w > 1200:
+        item_size -= 5
+        font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', item_size)
+        w, h = draw.textsize(item, font=font)
+
+    x, y = (width - w) / 2, ((height - h) / 2) - 170
+    draw.text((x, y), item, font=font, fill='black')
+
+    font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 100)
+    draw.text((100, 390), 'Out of stock?', font=font, fill='black')
+    draw.text((150, 540), 'Scan here:', font=font, fill='black')
+
+    im.save('tmp.png')
+    os.system('lp -d dymo tmp.png > /dev/null 2>&1')
+
 
 def message_protovac(thread):
     try:
@@ -562,6 +593,7 @@ label_tool = ''
 label_material_name = ''
 label_material_contact = ''
 label_generic = ''
+label_consumable = ''
 
 logging.info('Starting main loop...')
 
@@ -570,7 +602,7 @@ last_key = time.time()
 def ratelimit_key():
     global last_key
 
-    if think_to_send or sign_to_send or message_to_send or nametag_member or nametag_guest or label_tool or label_material_name or label_material_contact or label_generic or time.time() > last_key + 1:
+    if think_to_send or sign_to_send or message_to_send or nametag_member or nametag_guest or label_tool or label_material_name or label_material_contact or label_generic or label_consumable or time.time() > last_key + 1:
         last_key = time.time()
         return False
     else:
@@ -920,6 +952,14 @@ while True:
             stdscr.addstr(10, 4, '')
             stdscr.clrtoeol()
             stdscr.addstr(12, 4, 'Enter your message: ' + label_generic)
+            stdscr.clrtoeol()
+            stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
+        elif label_consumable:
+            stdscr.addstr(8, 4, '')
+            stdscr.clrtoeol()
+            stdscr.addstr(10, 4, '')
+            stdscr.clrtoeol()
+            stdscr.addstr(12, 4, 'Enter the item: ' + label_consumable)
             stdscr.clrtoeol()
             stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
         else:
@@ -1360,6 +1400,29 @@ I will be terse in my responses.
             else:
                 if c < 127 and c > 31:
                     label_generic = label_generic[:-1] + chr(c) + '_'
+        elif label_consumable:
+            if c == curses.KEY_BACKSPACE:
+                label_consumable = label_consumable[:-2] + '_'
+            elif c == KEY_ESCAPE:
+                label_consumable = ''
+                stdscr.erase()
+            elif c == KEY_ENTER:
+                if len(label_consumable) > 1:
+                    stdscr.addstr(15, 4, 'Printing...')
+                    stdscr.refresh()
+                    try:
+                        print_consumable_label(label_consumable[:-1])
+                    except BaseException as e:
+                        logging.exception(e)
+                        stdscr.addstr(15, 4, 'Error.')
+                        stdscr.clrtoeol()
+                        stdscr.refresh()
+                        time.sleep(2)
+                    stdscr.erase()
+                    label_consumable = ''
+            else:
+                if c < 127 and c > 31:
+                    label_consumable = label_consumable[:-1] + chr(c) + '_'
         elif button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
         elif button == 't':
@@ -1368,6 +1431,8 @@ I will be terse in my responses.
             label_material_name = '_'
         elif button == 'g':
             label_generic = '_'
+        elif button == 'c':
+            label_consumable = '_'
         else:
             try_highlight()
 
