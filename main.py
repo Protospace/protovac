@@ -370,6 +370,8 @@ def print_generic_label(text):
     MARGIN = 50
     MAX_W, MAX_H, PAD = 1285 - (MARGIN*2), 635 - (MARGIN*2), 5
 
+    logging.info('Printing generic label: %s', text)
+
     im = Image.open(location + '/label.png')
     width, height = im.size
     draw = ImageDraw.Draw(im)
