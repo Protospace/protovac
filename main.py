@@ -430,6 +430,8 @@ def print_consumable_label(item):
     width, height = im.size
     draw = ImageDraw.Draw(im)
 
+    logging.info('Printing consumable label item: %s', item)
+
     encodeded = urllib.parse.quote(item)
     url = 'https://spaceport.dns.t0.vc/out-of-stock?item=' + encodeded
 
