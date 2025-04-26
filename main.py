@@ -433,7 +433,7 @@ def print_consumable_label(item):
     logging.info('Printing consumable label item: %s', item)
 
     encodeded = urllib.parse.quote(item)
-    url = 'https://spaceport.dns.t0.vc/out-of-stock?item=' + encodeded
+    url = 'https://my.protospace.ca/out-of-stock?item=' + encodeded
 
     qr = qrcode.make(url, version=6, box_size=10)
     im.paste(qr, (800, 280))
