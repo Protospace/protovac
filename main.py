@@ -26,6 +26,7 @@ import textwrap
 import random
 import qrcode
 import urllib.parse
+import unicodedata
 from PIL import Image, ImageEnhance, ImageFont, ImageDraw
 from datetime import datetime, timezone, timedelta
 import paho.mqtt.publish as publish
@@ -85,6 +86,12 @@ def format_date(datestr):
     d = datetime.strptime(datestr, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=pytz.UTC)
     d = d.astimezone(TIMEZONE_CALGARY)
     return d.strftime('%a %b %-d, %Y  %-I:%M %p')
+
+def normalize_to_ascii(s):
+    return unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode('ascii')
+
+def truncate_string(s, max_length):
+    return s[:max_length-3] + '...' if len(s) > max_length else s
 
 def sign_send(to_send):
     try:
@@ -458,6 +465,54 @@ def print_consumable_label(item):
     os.system('lp -d dymo tmp.png > /dev/null 2>&1')
 
 
+def print_forum_label(thread):
+    im = Image.open(location + '/label.png')
+    width, height = im.size
+    draw = ImageDraw.Draw(im)
+
+    logging.info('Printing forum thread: %s', thread['title'])
+
+    url = 'https://forum.protospace.ca/t/{}/'.format(thread['id'])
+
+    qr = qrcode.make(url, version=6, box_size=9)
+    im.paste(qr, (840, 325))
+
+    item_size = 150
+
+    w = 9999
+    while w > 1200:
+        item_size -= 5
+        font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', item_size)
+        w, h = draw.textsize(item, font=font)
+
+    x, y = (width - w) / 2, ((height - h) / 2) - 140
+    draw.text((x, y), item, font=font, fill='black')
+
+    font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 100)
+    draw.text((100, 410), 'Out of stock?', font=font, fill='black')
+    draw.text((150, 560), 'Scan here:', font=font, fill='black')
+
+    im.save('tmp.png')
+    os.system('lp -d dymo tmp.png > /dev/null 2>&1')
+
+
+def search_forum_thread(search):
+    params = dict(q=search + ' in:title')
+    headers = {'Api-Key': secrets.FORUM_SEARCH_API_KEY, 'Api-Username': 'system'}
+
+    results = []
+
+    r = requests.get('https://forum.protospace.ca/search.json', params=params, headers=headers, timeout=5)
+    r.raise_for_status()
+    r = r.json()
+    for topic in r.get('topics', []):
+        results.append(dict(
+            id=topic['id'],
+            title=normalize_to_ascii(topic['title']),
+        ))
+    return sorted(results, key=lambda x: x['id'], reverse=True)[:7]
+
+
 def message_protovac(thread):
     try:
         logging.info('Message to Protovac: %s', thread[-1]['content'])
@@ -599,6 +654,8 @@ label_material_name = ''
 label_material_contact = ''
 label_generic = ''
 label_consumable = ''
+label_forum_search = ''
+search_results = None
 
 logging.info('Starting main loop...')
 
@@ -607,7 +664,7 @@ last_key = time.time()
 def ratelimit_key():
     global last_key
 
-    if think_to_send or sign_to_send or message_to_send or nametag_member or nametag_guest or label_tool or label_material_name or label_material_contact or label_generic or label_consumable or time.time() > last_key + 1:
+    if think_to_send or sign_to_send or message_to_send or nametag_member or nametag_guest or label_tool or label_material_name or label_material_contact or label_generic or label_consumable or label_forum_search or time.time() > last_key + 1:
         last_key = time.time()
         return False
     else:
@@ -925,7 +982,11 @@ while True:
         stdscr.addstr(0, 1, 'PROTOVAC UNIVERSAL COMPUTER')
         stdscr.addstr(2, 1, 'Print a Label')
         stdscr.addstr(3, 1, '===============')
-        stdscr.addstr(5, 1, 'Choose the type of label.')
+        if search_results is None:
+            stdscr.addstr(5, 1, 'Choose the type of label.')
+        else:
+            stdscr.addstr(5, 1, 'Choose the thread to print:')
+            stdscr.clrtoeol()
 
         if label_tool:
             stdscr.addstr(8, 4, 'Enter Wiki-ID tool number: ' + label_tool)
@@ -933,6 +994,8 @@ while True:
             stdscr.addstr(10, 4, '')
             stdscr.clrtoeol()
             stdscr.addstr(12, 4, '')
+            stdscr.clrtoeol()
+            stdscr.addstr(14, 4, '')
             stdscr.clrtoeol()
             stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
         elif label_material_contact:
@@ -942,6 +1005,8 @@ while True:
             stdscr.clrtoeol()
             stdscr.addstr(12, 4, '')
             stdscr.clrtoeol()
+            stdscr.addstr(14, 4, '')
+            stdscr.clrtoeol()
             stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
         elif label_material_name:
             stdscr.addstr(8, 4, '')
@@ -949,6 +1014,8 @@ while True:
             stdscr.addstr(10, 4, 'Enter your name: ' + label_material_name)
             stdscr.clrtoeol()
             stdscr.addstr(12, 4, '')
+            stdscr.clrtoeol()
+            stdscr.addstr(14, 4, '')
             stdscr.clrtoeol()
             stdscr.addstr(23, 1, '[RETURN] Next  [ESC] Cancel')
         elif label_generic:
@@ -958,6 +1025,8 @@ while True:
             stdscr.clrtoeol()
             stdscr.addstr(12, 4, 'Enter your message: ' + label_generic)
             stdscr.clrtoeol()
+            stdscr.addstr(14, 4, '')
+            stdscr.clrtoeol()
             stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
         elif label_consumable:
             stdscr.addstr(8, 4, '')
@@ -966,11 +1035,36 @@ while True:
             stdscr.clrtoeol()
             stdscr.addstr(12, 4, 'Enter the item: ' + label_consumable)
             stdscr.clrtoeol()
+            stdscr.addstr(14, 4, '')
+            stdscr.clrtoeol()
             stdscr.addstr(23, 1, '[RETURN] Print  [ESC] Cancel')
+        elif label_forum_search:
+            stdscr.addstr(8, 4, '')
+            stdscr.clrtoeol()
+            stdscr.addstr(10, 4, '')
+            stdscr.clrtoeol()
+            stdscr.addstr(12, 4, '')
+            stdscr.clrtoeol()
+            stdscr.addstr(14, 4, 'Search for a thread: ' + label_forum_search)
+            stdscr.clrtoeol()
+            stdscr.addstr(23, 1, '[RETURN] Search  [ESC] Cancel')
+        elif search_results is not None:
+            if len(search_results):
+                for i, result in enumerate(search_results):
+                    result_title = truncate_string(result['title'], 74)
+                    stdscr.addstr(7 + i*2, 1, '[{}]'.format(i+1), curses.A_REVERSE if highlight_keys else 0)
+                    stdscr.addstr(7 + i*2, 5, ' {}'.format(result_title))
+                    stdscr.clrtoeol()
+                stdscr.addstr(23, 1, '[ESC] Cancel')
+            else:
+                stdscr.addstr(8, 4, 'No results, try again.')
+                stdscr.addstr(23, 1, '[ESC] Cancel', curses.A_REVERSE if highlight_keys else 0)
+
         else:
             stdscr.addstr(8, 4, '[T] Tool label', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(10, 4, '[S] Sheet material', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(12, 4, '[G] Generic label', curses.A_REVERSE if highlight_keys else 0)
+            stdscr.addstr(14, 4, '[F] Forum thread', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
 
         stdscr.clrtoeol()
@@ -1110,7 +1204,7 @@ while True:
         button = None
 
     def try_highlight():
-        global c, highlight_debounce, highlight_keys, highlight_count, current_screen
+        global c, highlight_debounce, highlight_keys, highlight_count, current_screen, search_results
 
         if c and time.time() - highlight_debounce > 0.6:
             highlight_debounce = time.time()
@@ -1122,6 +1216,7 @@ while True:
         if highlight_count >= 3:
             highlight_count = 0
             current_screen = 'help'
+            search_results = None
 
     if current_screen == 'home':
         if button == 's':
@@ -1428,6 +1523,52 @@ I will be terse in my responses.
             else:
                 if c < 127 and c > 31:
                     label_consumable = label_consumable[:-1] + chr(c) + '_'
+        elif label_forum_search:
+            if c == curses.KEY_BACKSPACE:
+                label_forum_search = label_forum_search[:-2] + '_'
+            elif c == KEY_ESCAPE:
+                label_forum_search = ''
+                stdscr.erase()
+            elif c == KEY_ENTER:
+                if len(label_forum_search) > 2:
+                    stdscr.addstr(16, 4, 'Searching...')
+                    stdscr.refresh()
+                    try:
+                        search_results = search_forum_thread(label_forum_search[:-1])
+                    except BaseException as e:
+                        logging.exception(e)
+                        stdscr.addstr(16, 4, 'Error.')
+                        stdscr.clrtoeol()
+                        stdscr.refresh()
+                        time.sleep(2)
+                    stdscr.erase()
+                    label_forum_search = ''
+            else:
+                if c < 127 and c > 31:
+                    label_forum_search = label_forum_search[:-1] + chr(c) + '_'
+        elif search_results is not None:
+            if c == KEY_ESCAPE or button == 'b':
+                search_results = None
+                stdscr.erase()
+            elif c >= 49 and c <= 57:
+                num = int(chr(c))
+                if num <= len(search_results):
+                    stdscr.addstr(21, 1, 'Printing...')
+                    stdscr.refresh()
+                    try:
+                        print_forum_label(search_results[num-1])
+                    except BaseException as e:
+                        logging.exception(e)
+                        stdscr.addstr(15, 4, 'Error.')
+                        stdscr.clrtoeol()
+                        stdscr.refresh()
+                        time.sleep(2)
+                    stdscr.erase()
+                    label_consumable = ''
+                else:
+                    try_highlight()
+            else:
+                try_highlight()
         elif button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
         elif button == 't':
@@ -1438,6 +1579,8 @@ I will be terse in my responses.
             label_generic = '_'
         elif button == 'c':
             label_consumable = '_'
+        elif button == 'f':
+            label_forum_search = '_'
         else:
             try_highlight()
 
