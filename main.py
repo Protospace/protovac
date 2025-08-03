@@ -1694,14 +1694,14 @@ I will be terse in my responses.
         res = ''
 
         if button == 'r':
-            res = mqtt_publish('train/control/speed', 50)
-            logging.info('Setting train speed to: 50')
+            res = mqtt_publish('train/control/speed', -300)
+            logging.info('Setting train speed to: -300')
         elif button == 't' or c == KEY_SPACE:
-            res = mqtt_publish('train/control/speed', 90)
-            logging.info('Setting train speed to: 90')
+            res = mqtt_publish('train/control/speed', 0)
+            logging.info('Setting train speed to: 0')
         elif button == 'f':
-            res = mqtt_publish('train/control/speed', 140)
-            logging.info('Setting train speed to: 140')
+            res = mqtt_publish('train/control/speed', 300)
+            logging.info('Setting train speed to: 300')
 
         elif button == 'b' or c == KEY_ESCAPE:
             current_screen = 'home'
