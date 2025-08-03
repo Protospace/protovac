@@ -1064,7 +1064,7 @@ while True:
             stdscr.addstr(8, 4, '[T] Tool label', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(10, 4, '[S] Sheet material', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(12, 4, '[G] Generic label', curses.A_REVERSE if highlight_keys else 0)
-            stdscr.addstr(14, 4, '[F] Forum thread', curses.A_REVERSE if highlight_keys else 0)
+            #stdscr.addstr(14, 4, '[F] Forum thread', curses.A_REVERSE if highlight_keys else 0)
             stdscr.addstr(23, 1, '[B] Back', curses.A_REVERSE if highlight_keys else 0)
 
         stdscr.clrtoeol()
